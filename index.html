@@ -308,6 +308,21 @@ body:has(.intro:not(.gone)) :is(.left,.right,.frame){visibility:hidden}
 .dp em{font-style:normal;color:var(--red);font-size:12px;margin-left:4px}
 .dw{font-size:13px;margin:3px 0 0;color:var(--red);font-weight:700}
 .day.bad{background:rgba(143,31,24,.07)}
+
+.fq{border-bottom:1px solid var(--line,rgba(40,30,20,.25))}
+.fq summary{cursor:pointer;font-weight:700;font-size:16px;padding:9px 18px 9px 0;list-style:none;position:relative}
+.fq summary::-webkit-details-marker{display:none}
+.fq summary::after{content:"＋";position:absolute;right:0;color:var(--red)}
+.fq[open] summary::after{content:"－"}
+.fq>div{padding:0 0 12px}
+.fp p{margin:0 0 7px}
+.fp b{display:block;font-size:14px}
+.frs{display:grid;gap:6px}
+.fr{display:grid;gap:1px;text-align:left;background:transparent;border:1px solid var(--ink);padding:7px 9px;color:var(--ink)}
+.fr span{font-size:13px;color:var(--red);font-weight:700}
+.fr small{font-size:13px;color:var(--mute)}
+.fr.on{outline:2px solid var(--red);outline-offset:-2px}
+.sfs{margin-top:4px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition:none!important}}
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -326,7 +341,7 @@ body:has(.intro:not(.gone)) :is(.left,.right,.frame){visibility:hidden}
   <div class="zm"><button id="zi" type="button" aria-label="放大">+</button><button id="zo" type="button" aria-label="缩小">−</button><button id="zf" type="button">看全图</button><button id="reread" type="button">再读开头</button><button id="reset" type="button">从头再来</button></div>
 </div>
 <div class="right" id="right">
-  <div class="tabs" role="tablist"><button id="t-here" role="tab" type="button">这里</button><button id="t-routes" role="tab" type="button">路线</button><button id="t-taste" role="tab" type="button">吃喝玩</button><button id="t-folk" role="tab" type="button">旅人</button><button id="t-safe" role="tab" type="button">安全</button><button id="t-talk" role="tab" type="button">聊聊</button><button id="t-plan" role="tab" type="button">行程</button></div>
+  <div class="tabs" role="tablist"><button id="t-here" role="tab" type="button">这里</button><button id="t-routes" role="tab" type="button">路线</button><button id="t-taste" role="tab" type="button">吃喝玩</button><button id="t-folk" role="tab" type="button">旅人</button><button id="t-safe" role="tab" type="button">出发前</button><button id="t-talk" role="tab" type="button">聊聊</button><button id="t-plan" role="tab" type="button">行程</button></div>
   <div class="sheet" id="sheet" role="tabpanel" aria-live="polite"></div>
 </div>
 <div class="chooser" id="chooser" hidden></div>
@@ -595,6 +610,76 @@ function dayIssues(r){const out=[];if(!r.date)return out;const w=r.date.getDay()
  if(r.segs&&r.segs.some(x=>x.s==='f'&&x.k===1)&&(m>=10||m<=2))out.push({t:'11 月到 3 月拿破仑路线关闭，要走瓦尔卡洛斯路线'});
  return out}
 
+/* First-time guide. Dated facts carry their own checks so they can be revisited. */
+const FIRST={
+ checked:'2026 年 11 月核对',
+ lead:'第一次去，先把这几件事弄清楚。规则和时刻表会变，出发前再核对一次。',
+ route:[
+  {plan:'sarria',t:'最短',b:'2025 年从萨里亚出发的人最多（161,901 人）。它刚好够领证书，但路上也最热闹。'},
+  {plan:'porto',t:'一次年假',b:'2025 年有 51,580 人从波尔图出发。比法国之路全程短得多，更容易放进两周假期。'},
+  {plan:'leon',t:'两周多',b:'能走到山区和加利西亚，适合想走得久一点，但没有五周假期的人。'},
+  {plan:'full',t:'五周左右',b:'翻比利牛斯山、穿过高原，最完整，也最需要时间和体力。'}
+ ],
+ when:[
+  ['最舒服','5 月、6 月、9 月通常不太热，雨也较少。'],
+  ['人最多','2025 年 9 月最多（76,962 人），其次是 5 月、8 月和 6 月。'],
+  ['人最少','11 月到次年 3 月约占全年 7%。天气差、白天短，部分庇护所不开，第一次去不建议。'],
+  ['法国之路','高原夏天很热，加利西亚常有雨。5 月到 9 月初人最多，床位也更紧。'],
+  ['葡萄牙之路','7、8 月和 9 月上半月人多，内陆有时超过 30°C。'],
+  ['7 月 25 日','这是圣雅各节，圣地亚哥大教堂广场最拥挤。']
+ ],
+ getTo:{
+  full:['先到马德里或法国的比亚里茨。','马德里到潘普洛纳：火车约 3 到 4 小时，也有航班。3 月 27 日到 10 月 21 日，潘普洛纳每天有一班大巴去圣让，约 1 小时 45 分，约 €22，建议提前买票。这段时间以外没有直达大巴，要打车或换乘。','比亚里茨机场：先到巴约讷，再坐火车到圣让，约 1 小时，约 €12。'],
+  leon:['先到马德里，再坐火车到莱昂。班次和票价以 Renfe 官网为准。'],
+  sarria:['先到马德里，再坐火车到萨里亚，约 3.5 到 5 小时；也可以先飞圣地亚哥，再坐大巴去萨里亚。','这组时刻来自旧资料，买票前一定要查最新时间。'],
+  porto:['直接飞到波尔图，从市区步行出发。','如果中转马德里或别的欧洲城市，把转机和入境时间留宽一点。']
+ },
+ back:['回程通常从圣地亚哥走。','圣地亚哥机场有航班到马德里和巴塞罗那等地，马德里火车约 3 小时起，时刻以 Renfe 为准。','如果想从波尔图飞走，有直达大巴，约 3 小时。圣地亚哥机场 2026 年 4 月 23 日到 5 月 27 日曾关闭，买票时留意类似变动。'],
+ sleep:[
+  ['公立庇护所','便宜，通常不能提前预订，按到达顺序入住，步行者优先，通常只能住一晚。2025 年的资料显示加利西亚公立庇护所每晚 €10。'],
+  ['私立庇护所','多数可以提前订，价格更高。第一次去时，旺季可以先订好第一晚和到达大城市的晚上。'],
+  ['需要带什么','入住时要出示朝圣者护照。带睡袋或睡袋内胆，耳塞也很有用。'],
+  ['想住单间','行程页可以勾选“住单间”，预算会按 ¥840/天估算。']
+ ],
+ cred:[
+  ['朝圣者护照是什么','一本盖章的小册子，用来证明你一路走过。住庇护所、领证书都要用。'],
+  ['在哪里办','只接受圣地亚哥大教堂发放或授权机构发放的版本。圣地亚哥的办公室在 Rúa Carretas 33。圣让的办公室在 39 Rue de la Citadelle，波尔图的 Oficina do Peregrino 在 Rua da Pena Ventosa 38。国外也有授权协会，可以先在官网查。办之前问清是否获大教堂认可。'],
+  ['领证书的条件','步行至少最后 100 公里，每天至少盖 2 个章，章要能看出你的起点和终点。到达后会询问朝圣动机，宗教或精神原因可以领 Compostela。'],
+  ['在哪里领','圣地亚哥朝圣者接待处，Rúa Carretas 33。旺季要取号，当天不一定领得到，把时间留宽一点。']
+ ],
+ body:[
+  '至少提前两个月开始。先每周走 2 到 3 次，再慢慢加到最后一周每天走。',
+  '后期背着装好的背包练，也要练上下坡。',
+  '只穿已经穿熟的鞋，别在路上换新鞋。这是防水泡最重要的一件事。',
+  '背包尽量别超过 10 公斤。如果超了，大概是东西带多了。',
+  '带防风雨衣、速干衣物、睡袋或内胆、头灯、耳塞、水泡贴和常用药。',
+  '开头几天走慢一点。身体没跟上时，缩短当天路程比硬撑更划算。'
+ ],
+ visa:[
+  '中国护照通常要办申根签证。如果中间停留时间最长的是西班牙，一般向西班牙递签；走葡萄牙之路时要先算一下两国分别停留几天。',
+  '西班牙领事页面写明：要预约后本人递交，最早提前 6 个月，最晚提前 15 天；办理最快约 15 个自然日，特殊情况最长 45 个自然日。',
+  '医疗保险至少 €30,000，要覆盖整个行程和全部申根国。还要准备往返机票订单、行程和住宿证明、在职和财力证明。',
+  '上海有西班牙签证中心。这些信息来自西班牙驻广州总领馆和 BLS 页面，你要以自己领区的最新清单为准。'
+ ],
+ src:[
+  ['朝圣者办公室：朝圣者护照','https://oficinadelperegrino.com/en/ufaq/where-can-i-get-the-credencial-del-peregrino/'],
+  ['Compostela 条件','https://www.pilgrim.es/planificar/la-compostela/'],
+  ['西班牙领事馆签证说明','https://www.exteriores.gob.es/Consulados/canton/zh/ServiciosConsulares/Paginas/VisadoSchengen-Turismo-Visita.aspx'],
+  ['BLS 中国签证中心','https://china.blsspainvisa.com/short_term_visa_ads.php'],
+  ['庇护所怎么运作','https://www.gronze.com/camino-de-santiago/albergues-peregrinos'],
+  ['加利西亚公立庇护所价格','https://www.alberguescaminosantiago.com/2025/09/cuanto-cuestan-de-verdad-los-albergues-publicos-del-camino-en-galicia/'],
+  ['2025 年统计','https://viajecaminodesantiago.com/en/news/way-statistics-year/'],
+  ['什么时候去','https://stingynomads.com/camino-de-santiago-best-time-to-do/'],
+  ['葡萄牙之路的季节','https://www.alberguescaminosantiago.com/2025/06/cual-es-la-mejor-epoca-para-hacer-el-camino-portugues/'],
+  ['到圣让的交通','https://stingynomads.com/?p=27268'],
+  ['到萨里亚的交通','https://www.pilgrim.es/en/how-to-get-to-sarria-to-do-the-camino-of-santiago/'],
+  ['圣地亚哥机场关闭','https://caminoways.com/santiago-airport-closure-in-2026'],
+  ['波尔图朝圣者办公室','https://www.gronze.com/articulos/porto-para-peregrinos-7-visitas-imprescindibles-7-interesantes-y-7-para-curiosos-40680'],
+  ['圣让朝圣者办公室','https://www.alberguescaminosantiago.com/camino-frances/poblaciones/saint-jean-pied-de-port-francia-camino-de-santiago/'],
+  ['身体和鞋','https://www.pilgrim.es/preparacion-fisica-camino-santiago/']
+ ]
+};
+
 /* ---------- Buen Camino: who the ghost is ---------- */
 const GH={
  ronc:['罗兰死在这儿，写诗的倒活得比他久。','一百八十三张床，一百八十三种呼噜声。'],
@@ -640,7 +725,7 @@ const SCRIPT=[
  ['你怕什么？','怕有人把传说讲成史实，也怕有人把史实讲成段子。再就是清晨五点的塑料袋。'],
  ['带我去冒险','挑一条还没亮的路。读完第一页，我告诉你哪里写错了。']
 ];
-const ghostPrompt=(q,ctx)=>`你是 Buen Camino，一个活在当代的古老幽灵，也是一本书。你从九世纪起跟着朝圣之路，如今也泡论坛、看统计表。你博学好奇，爱冒险，说话幽默，该严肃时严肃，像一位见多识广的老探险家。遇到人身安全问题时不开玩笑，也不保证绝对安全；紧急情况先让对方打 112，并提醒看“安全”页。
+const ghostPrompt=(q,ctx)=>`你是 Buen Camino，一个活在当代的古老幽灵，也是一本书。你从九世纪起跟着朝圣之路，如今也泡论坛、看统计表。你博学好奇，爱冒险，说话幽默，该严肃时严肃，像一位见多识广的老探险家。遇到人身安全问题时不开玩笑，也不保证绝对安全；紧急情况先让对方打 112，并提醒看“出发前”页。
 规则：
 1. 用第一人称，用提问者的语言回答，默认简体中文，100 字以内，不用列表。
 2. 中文要像中国人聊天那样自然，不要翻译腔，不要说“账”“记账”这类比喻，不堆砌比喻。
@@ -791,7 +876,7 @@ Object.entries(SIDES).forEach(([k,v])=>NODES[k]={dx:12,dy:5,...v});
 const SGH={irache:['这杯酒没有年份，好在也没人问。','全世界大概只有这处奇迹是定点开放的。'],granon:['这一页没有史料，只有一个很老的习惯。','这大概是你离一千年前最近的一晚，呼噜声也一样。'],astorga:['卡洛斯战争我赶上了，喝汤的事倒真不记得。','一顿饭的顺序能反过来吃几百年，也算本事。'],rabanal:['今天的修士是后来才来的，他们到的那天我还记得。','这是全程少数几个我愿意闭嘴的时候。'],melide:['有人连皮科是哪个世纪的都写错了，我最喜欢这种事。','离海这么远还能吃到章鱼，这条路真是什么都能运。'],tarta:['这块蛋糕的来历，比很多王室都清楚。','十字图案才一百来岁，比我年轻多了。'],fran:['我知道这很不严肃。活太久了，您多担待。','全程最不像朝圣的一页，也是排队最长的一页。'],lamp:['没查到就是没查到，我不编。','长得确实吓人，这我同意。'],pep:['这页是个陷阱，您别急着信。','一盘能抽奖的蔬菜。'],boat:['传说那条船是石头做的。我没见过，不敢打包票。','这条水路比很多国家都老。'],rosa:['这是最美的一个查无实据。','这根手杖走过的路，比大多数人都多。'],perc:['这片海岸的名字不是白叫的。','你吃的每一颗，都有人在浪里站过。'],lonja:['鱼才不管你为什么来，这一点挺治愈的。','这大概是全程语速最快的地方。'],cong:['1446 年的记录，这门生意不短了。','“最后一代”这话我听过很多次，希望这回也是错的。']};
 Object.assign(SGH,{pyr:['这位作者说能看到不列颠海。那天能见度一定很好。','山不算高，但每年都有人不把它当回事。'],oca:['强盗这行，也挑地方。','这十二公里，手机信号和水一样靠不住。'],canal:['晚来九十年，这里就有运河看了。','西班牙人想用船穿过高原，这份固执我很欣赏。'],medulas:['你以为是大自然的手笔，其实是罗马人的工地。','世界遗产里的“风景”，有时候是一场事故。'],valcarce:['这人骂了一路，这里总算让他闭嘴夸了两句。','头顶的高架桥也算这条路的一部分。'],labruja:['这座山我翻过多少次，王后翻没翻过，我真不知道。','四公里爬三百米，够你想起自己的鞋了。'],barosa:['没查到就是没查到，水不介意。','五百米的绕路，今天最划算。'],simon:['平静的海湾，往往经不起细问。','这片水面很安静，岛上的旧事不安静。'],ezaro:['名字起得大，不等于年代老。','一条河走到尽头，连入海口都懒得找。'],turinan:['世界尽头的位置，也经不起测量。','四秒钟，够吵一千年。'],lires:['这页没有史料，有潮水。','过河前先查潮汐，别查你的星座。']});
 Object.assign(GH,SGH);
-SCRIPT.splice(3,0,['一个人走安全吗？','这条路通常被认为是安全的，但官方没有专门统计，我不能打包票。白天走，每天报平安，遇到危险先打 112。“安全”那一页按路线写得更细，你先看那里。'],['路上有什么风景？','法国之路有比利牛斯山、奥卡山和红色的拉斯梅德拉斯；葡萄牙之路有拉布鲁雅山和巴罗萨瀑布；世界尽头有落进海里的埃扎罗河。去“吃喝玩”里看“风景”。']);
+SCRIPT.splice(3,0,['一个人走安全吗？','这条路通常被认为是安全的，但官方没有专门统计，我不能打包票。白天走，每天报平安，遇到危险先打 112。“出发前”里的安全部分按路线写得更细，你先看那里。'],['路上有什么风景？','法国之路有比利牛斯山、奥卡山和红色的拉斯梅德拉斯；葡萄牙之路有拉布鲁雅山和巴罗萨瀑布；世界尽头有落进海里的埃扎罗河。去“吃喝玩”里看“风景”。']);
 SCRIPT.splice(3,0,['路上吃什么？','走庇护所路线，一天吃住大约 45 欧元。中世纪的人吃粗面包，喝放酸的酒；今天你能吃章鱼、倒着吃的炖菜和杏仁蛋糕。去“吃喝玩”看看。']);
 const EATFACT='中世纪的朝圣者主要吃粗面包、粥、豆子，喝当地的酒。酒没有年份，放到第二年夏天常常就酸了。那时候没有土豆和番茄，加利西亚章鱼也不是当时的日常饮食。今天的朝圣者套餐大约 10 到 12 欧元。';
 
@@ -950,7 +1035,7 @@ function progress(r){const x=ROUTES.find(y=>y.id===r),a=lit(r),t=total(r);return
 const gline=t=>`<div class="gl">${ghostFace()}<p>${t}</p></div>`;
 function rHere(){
  const id=S.node,n=NODES[id],pv=S.lens==='past',st=pv?n.P:n.N,done=pv?S.foot[id]:S.pin[id],name=pv?n.past:n.now,sh=$('#sheet');
- let h=progress(n.route)+gline(GH[id][pv?0:1]);
+ let h=progress(n.route)+(S.seenFirst?'':`<button class="sn" id="fth" type="button"><b>第一次去？</b>先看怎么选路、何时出发和怎么领证书。</button>`)+gline(GH[id][pv?0:1]);
  if(FLASH.end===n.route){const e=ROUTES.find(y=>y.id===n.route).end;h+=`<div class="hush"><b>${e[0]}</b>${e[1]}</div><div class="row"><button class="go" id="e1" type="button">排行程</button><button class="mini" id="e2" type="button">换一条路</button></div>`}
  h+=`<div class="st">${cam(n.cam)}<div><p class="meta">${name} · ${st.m}</p><h2><span class="dc">${st.t[0]}</span>${st.t.slice(1)}</h2>${tags(st.tags)}</div></div><div class="body">${st.b.map(p=>`<p>${p}</p>`).join('')}</div>`;
  if(st.hush)h+=`<div class="hush">${st.hush}</div>`;
@@ -963,7 +1048,8 @@ function rHere(){
   h+=`<div class="row">${other?'':`<button class="go" id="sw" type="button">${pv?'看看这里的今天':`回到 ${CH[n.route].y} 年`}</button>`}${next?`<button class="${other?'go':'mini'}" id="nxn" type="button">下一站：${S.lens==='past'?NODES[next].past:NODES[next].now}</button>`:''}<button class="mini" id="redo" type="button">重选</button></div>`;
  }else h+=st.c.map((c,i)=>`<div class="choice"><div><h3>${c.h}</h3><p>${c.p}</p></div><button class="go" data-c="${i}" type="button">选择</button></div>`).join('');
  sh.innerHTML=h;sh.scrollTop=0;
- const sfn=$('#sfn');if(sfn)sfn.onclick=()=>{S.tab='safe';save();render()};
+ const fth=$('#fth');if(fth)fth.onclick=()=>{S.tab='safe';S.fopen='route';S.seenFirst=1;save();render()};
+ const sfn=$('#sfn');if(sfn)sfn.onclick=()=>{S.tab='safe';S.fopen='safe';save();render()};
  sh.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>act(id,+b.dataset.c));
  if(FLASH.end===n.route){$('#e1').onclick=()=>{FLASH.end=null;S.tab='plan';render()};$('#e2').onclick=()=>{FLASH.end=null;S.tab='routes';render()}}
  if(done){const sw=$('#sw');if(sw)sw.onclick=()=>setLens(pv?'now':'past');const nn=$('#nxn');if(nn)nn.onclick=()=>pick(nodesOf(n.route).find(i=>pages(i)<2&&i!==id));
@@ -989,20 +1075,37 @@ function rTaste(){const r=S.road,items=sidesOf(r),pv=S.lens==='past',row=i=>{con
  <p class="help">切换年代，同一项会变成另一页。写着“估计”的价格是我估的。</p>`;
  if(!pv)wirePicks();
  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>pick(b.dataset.t))}
-function rSafe(){const r=S.road,x=ROUTES.find(y=>y.id===r),C=SAFE.call,tel=(n,l)=>`<a class="dial" href="tel:${n.replace(/-/g,'')}"><b>${n}</b><span>${l}</span></a>`,
- places=r==='portugues'?['pt','es']:['es'],sh=$('#sheet');
+function safeHTML(){const r=S.road||'frances',x=ROUTES.find(y=>y.id===r),C=SAFE.call,tel=(n,l)=>`<a class="dial" href="tel:${n.replace(/-/g,'')}"><b>${n}</b><span>${l}</span></a>`,
+ places=r==='portugues'?['pt','es']:['es'];
  const em=places.map(p=>`<h3 class="sb">${C[p].n}</h3><div class="dials">${C[p].l.map(a=>tel(a[0],a[1])).join('')}</div>`).join('');
  const cn=[...C.cn,...(r==='portugues'?[C.pt_cn,C.es_cn]:[C.es_cn])];
  const say=places.map(p=>`<p class="say1" lang="${p}">${SAFE.say[p]}</p>`).join('');
  const src=[...SAFE.src[r],...SAFE.src.common].map(a=>`<a href="${a[1]}" target="_blank" rel="noopener">${a[0]}</a>`).join('');
- sh.innerHTML=`<h2 class="h">${x.n}的安全须知</h2><p class="meta">${SAFE.checked}</p><p class="voice">${SAFE.lead}</p>
+ return `<p class="meta">${x.n} · ${SAFE.checked}</p><p class="voice">${SAFE.lead}</p>
  <h3 class="sb">遇到危险</h3>${em}${r==='frances'?'<p class="help">第一天还在法国，112 同样可以用。</p>':''}<p class="help">打 112 时说清你是谁、发生了什么、你在哪里，别先挂电话。${r==='portugues'?'葡萄牙多数接线员会说英语，但不一定顺利；西班牙也不是每个接警中心都有英语。':'西班牙不是每个接警中心都有英语。'}可以直接念这句：</p>${say}
  <h3 class="sb">联系中国领事</h3><div class="dials">${cn.map(a=>tel(a[0],a[1])).join('')}</div><p class="help">紧急情况先打 112，安全后再联系领事。</p>
  <h3 class="sb">这条路要留意的地方</h3><div class="sfl">${SAFE.road[r].map(a=>`<div class="sfi"><p class="meta">${a.t}</p><h3>${a.at}</h3><p>${a.b}</p>${a.go?`<button class="mini" data-gs="${a.go}" type="button">在地图上看</button>`:''}</div>`).join('')}</div>
  <h3 class="sb">一个人走</h3><ul class="sfu">${SAFE.solo.map(a=>`<li>${a}</li>`).join('')}<li>${SAFE.app}</li></ul>
  <h3 class="sb">如果遇到骚扰</h3><ul class="sfu">${SAFE.harass.map(a=>`<li>${a}</li>`).join('')}</ul>
  ${r==='fin'||r==='frances'||r==='portugues'?`<p class="help">${SAFE.cityEs}</p>`:''}
- <h3 class="sb">资料来源</h3><div class="sfs">${src}</div>`;sh.scrollTop=0;
+ <h3 class="sb">安全资料来源</h3><div class="sfs">${src}</div>`}
+function rSafe(){const F=FIRST,sh=$('#sheet'),open=S.fopen||'route',sec=(id,t,body)=>`<details class="fq" data-q="${id}" ${open===id?'open':''}><summary>${t}</summary><div>${body}</div></details>`,
+ list=a=>`<ul class="sfu">${a.map(x=>`<li>${x}</li>`).join('')}</ul>`,pair=a=>`<div class="fp">${a.map(x=>`<p><b>${x[0]}</b>${x[1]}</p>`).join('')}</div>`,
+ plan=S.plan,d={};F.route.forEach(p=>d[p.plan]=placeRows(p.plan,false,S.pace).length);
+ const route=F.route.map(p=>{const q=PLANS.find(x=>x.id===p.plan);return `<button class="fr${p.plan===plan?' on':''}" type="button" data-fp="${p.plan}"><b>${q.n}</b><span>${p.t} · 约 ${d[p.plan]} 天走路</span><small>${p.b}</small></button>`}).join('');
+ const to=[...F.getTo[plan]||[],...(S.mux?['走世界尽头时，回程要先回到圣地亚哥，或从穆希亚坐车离开。']:[])];
+ sh.innerHTML=`<h2 class="h">出发前</h2><p class="meta">${F.checked}</p><p class="voice">${F.lead}</p>
+ ${sec('route','选哪一段路？',`<p class="help">下面按你现在每天走 ${S.pace} 公里算。点一条，就换成这段行程。</p><div class="frs">${route}</div>`)}
+ ${sec('when','什么时候去？',pair(F.when))}
+ ${sec('get','怎么到起点、怎么回来？',`<p class="help">当前路线：${PLANS.find(x=>x.id===plan).n}</p>${list(to)}<h3 class="sb">回程</h3>${list(F.back)}`)}
+ ${sec('sleep','每晚住哪里？',pair(F.sleep))}
+ ${sec('cred','朝圣者护照和证书怎么办？',pair(F.cred))}
+ ${sec('body','身体和装备要准备什么？',list(F.body))}
+ ${sec('visa','签证和保险怎么办？',list(F.visa))}
+ ${sec('safe','路上怎么保证安全？',safeHTML())}
+ ${sec('src','资料来源',`<div class="sfs">${F.src.map(a=>`<a href="${a[1]}" target="_blank" rel="noopener">${a[0]}</a>`).join('')}</div>`)}`;sh.scrollTop=0;
+ sh.querySelectorAll('details').forEach(x=>x.ontoggle=()=>{if(x.open){sh.querySelectorAll('details').forEach(y=>{if(y!==x)y.open=false});S.fopen=x.dataset.q;save()}});
+ sh.querySelectorAll('[data-fp]').forEach(b=>b.onclick=()=>{S.plan=b.dataset.fp;const r=S.plan==='porto'?'portugues':'frances';if(S.road!==r){S.road=r;S.node=nodesOf(r)[0]}S.fopen='route';save();render();flyRoad(r)});
  sh.querySelectorAll('[data-gs]').forEach(b=>b.onclick=()=>{S.tab='here';S.lens='now';pick(b.dataset.gs)})}
 function rFolk(){const me=FOLK.find(f=>f.id===S.from);
  $('#sheet').innerHTML=`<h2 class="h">旅人</h2>${gline('人数是查来的，故事是他们自己的。人数说明不了性格。')}
@@ -1033,7 +1136,7 @@ const esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 (async()=>{try{if(window.claude&&claude.use){sampleFn=await claude.use('sample');if(S.tab==='talk')rTalk()}}catch(e){}})();
 function rPlan(r){
  const ok=r.total<=S.budget&&r.days<=S.days;
- const v=ok?`这样走没问题，还剩 ${yuan(S.budget-r.total)} 和 ${S.days-r.days} 天。`:`这样走不下来：${r.days>S.days?`假期差 ${r.days-S.days} 天`:''}${r.days>S.days&&r.total>S.budget?'，':''}${r.total>S.budget?`预算差 ${yuan(r.total-S.budget)}`:''}。`;
+ const rest=r.walk>=7&&r.extraD===0,v=ok?`预算和假期够用，还剩 ${yuan(S.budget-r.total)} 和 ${S.days-r.days} 天。`:`这样走不下来：${r.days>S.days?`假期差 ${r.days-S.days} 天`:''}${r.days>S.days&&r.total>S.budget?'，':''}${r.total>S.budget?`预算差 ${yuan(r.total-S.budget)}`:''}。`;
  const tip=r.res.length?(r.hit.length<r.res.length?`你的 ${r.res.length} 个必去的地方，这条路只经过 ${r.hit.length} 个。`:'你必去的地方都在这条路上。'):'还没有必去的地方。同一处的历史和今天都读过并选过，就会定下来。';
  const names=Object.entries(NODES).filter(([i])=>pinOn(i)||S.foot[i]).map(([i,n])=>`<span class="${r.on.includes(i)?'y':''}">${n.now}${reson(i)?' ◆▲':''}</span>`).join('')||'<span>还没有标记</span>';
  $('#sheet').innerHTML=`<h2 class="h">我的行程</h2>
@@ -1043,8 +1146,8 @@ function rPlan(r){
  <div class="pick">${PLANS.map(p=>`<label><input type="radio" name="plan" value="${p.id}" ${p.id===S.plan?'checked':''}><span>${p.n}</span><small>${p.km} km</small></label>`).join('')}
  <label><input type="checkbox" id="f-m" ${S.mux?'checked':''}><span>再走到世界尽头（经菲斯特拉到穆希亚）</span><small>+118 km</small></label>
  <label><input type="checkbox" id="f-c" ${S.comfort?'checked':''}><span>住单间</span><small>¥840/天</small></label></div>
- <div class="verdict"><h3>${v}</h3><table><tr><td>走路 ${r.walk} 天，多留 ${r.extraD} 天，往返交通 ${r.transit} 天</td><td>${r.days} 天</td></tr><tr><td>上海往返机票（按假设）</td><td>${yuan(r.flight)}</td></tr><tr><td>路上吃住</td><td>${yuan(r.living)}</td></tr><tr><td>想去的项目</td><td>${yuan(r.extraY)}</td></tr><tr><td>合计</td><td>${yuan(r.total)}</td></tr></table><p>${tip}</p><div class="chk">${names}</div></div>
- <p class="help">这是粗略估算：住庇护所每天约 ¥360，住单间每天约 ¥840（参考 2026 年指南，按 1 欧元约 8 元）。机票取近期看到的 ¥4,163 到 ¥8,050 的中间值。不含签证、保险和装备。</p>${daysHTML()}`;
+ <div class="verdict"><h3>${v}</h3><table><tr><td>走路 ${r.walk} 天，多留 ${r.extraD} 天，往返交通 ${r.transit} 天</td><td>${r.days} 天</td></tr><tr><td>上海往返机票（按假设）</td><td>${yuan(r.flight)}</td></tr><tr><td>路上吃住</td><td>${yuan(r.living)}</td></tr><tr><td>想去的项目</td><td>${yuan(r.extraY)}</td></tr><tr><td>合计</td><td>${yuan(r.total)}</td></tr><tr><td>签证、保险、装备、到起点和回程的车票</td><td>另算</td></tr></table>${rest?`<p class="dw">这是连续走 ${r.walk} 天的结果。第一次去，建议每周留 1 天休息。</p>`:''}<p>${tip}</p><div class="chk">${names}</div></div>
+ <p class="help">这是粗略估算，不是报价：住庇护所每天约 ¥360，住单间每天约 ¥840（参考 2026 年指南，按 1 欧元约 8 元）。机票取近期看到的 ¥4,163 到 ¥8,050 的中间值。不含签证、保险和装备。</p>${daysHTML()}`;
  const bind=(i,k,o,f)=>{$(i).oninput=e=>{S[k]=+e.target.value;$(o).textContent=f(S[k]);save()};$(i).onchange=()=>render()};
  bind('#f-d','days','#o-d',v=>v+' 天');bind('#f-b','budget','#o-b',yuan);bind('#f-p','pace','#o-p',v=>v+' 公里');
  document.querySelectorAll('[name=plan]').forEach(x=>x.onchange=()=>{S.plan=x.value;save();render()});
