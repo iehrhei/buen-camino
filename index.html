@@ -323,6 +323,16 @@ body:has(.intro:not(.gone)) :is(.left,.right,.frame){visibility:hidden}
 .fr small{font-size:13px;color:var(--mute)}
 .fr.on{outline:2px solid var(--red);outline-offset:-2px}
 .sfs{margin-top:4px}
+
+.pm{cursor:pointer;outline:none}.pm.off{display:none}
+.pmh{fill:transparent}
+.pmi{fill:var(--card);stroke:var(--red);stroke-width:2}
+.pm.on .pmi{fill:var(--red)}
+.pm:hover .pmi,.pm:focus-visible .pmi{stroke-width:3}
+.pmt{display:none;font-size:13px;font-weight:700;fill:var(--ink);paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+.pm:hover .pmt,.pm:focus-visible .pmt{display:block}
+.pk.flash{animation:pkf 1.8s ease-out}
+@keyframes pkf{0%,35%{background:rgba(143,31,24,.14)}100%{background:transparent}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition:none!important}}
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -337,7 +347,7 @@ body:has(.intro:not(.gone)) :is(.left,.right,.frame){visibility:hidden}
   <div class="lens" role="group" aria-label="切换年代"><button id="l-past" type="button"></button><button id="l-now" type="button">今天</button></div>
   <div class="who" id="who"></div>
   <div class="tallies" id="tallies"></div>
-  <div class="key"><span><svg viewBox="-11 -11 22 22"><circle r="5.6" fill="none" stroke="#111" stroke-width="2"/></svg>主要地点</span><span><svg viewBox="-11 -11 22 22"><path id="kf"/></svg>吃的</span><span><svg viewBox="-11 -11 22 22"><path id="kd"/></svg>玩的</span><span><svg viewBox="-11 -11 22 22"><path id="kn"/></svg>风景</span></div>
+  <div class="key"><span><svg viewBox="-11 -11 22 22"><circle r="5.6" fill="none" stroke="#111" stroke-width="2"/></svg>主要地点</span><span><svg viewBox="-11 -11 22 22"><path id="kf"/></svg>吃的</span><span><svg viewBox="-11 -11 22 22"><path id="kd"/></svg>玩的</span><span><svg viewBox="-11 -11 22 22"><path id="kn"/></svg>风景</span><span><svg viewBox="-11 -11 22 22"><path d="M0-6L6 0L0 6L-6 0Z" fill="#8F1F18"/></svg>今天精选</span></div>
   <div class="zm"><button id="zi" type="button" aria-label="放大">+</button><button id="zo" type="button" aria-label="缩小">−</button><button id="zf" type="button">看全图</button><button id="reread" type="button">再读开头</button><button id="reset" type="button">从头再来</button></div>
 </div>
 <div class="right" id="right">
@@ -561,6 +571,8 @@ const PLANSEG={full:['f',1],leon:['f',21],sarria:['f',29],porto:['p',1]};
 /* where each stop falls: set + stage number */
 const LOC={ronc:'f1',pyr:'f1',irache:'f6',franco:'f7',soriano:'f7',sdc:'f9',granon:'f10',oca:'f11',atapuerca:'f12',burgos:'f12',cast:'f14',canal:'f15',leonct:'f20',leon:'f20',orbigo:'f21',astorga:'f22',rabanal:'f23',cruz:'f24',medulas:'f24',cebreiro:'f26',valcarce:'f26',melide:'f31',tarta:'f33',fran:'p1',bar:'p2',pdl:'p3',labruja:'p4',lamp:'p5',tui:'p5',simon:'p7',barosa:'p9',boat:'p9',pep:'p10',pad:'p10',pma:'e1',ezaro:'e3',fis:'e4',lonja:'e4',turinan:'e5',lires:'e5',mux:'e5',perc:'e5',cong:'e5'};
 const ENDLOC={abastos:{f:33,p:11},cubiertas:{f:33,p:11}};
+/* map markers for picks without a stop of their own: base point, screen offset in px */
+const PMAP={franco:['log',-11,-11],soriano:['log',11,-11],atapuerca:['bur',24,-9],burgos:['bur',-1,-14],leonct:['leon',0,-15],abastos:['san',-13,-13],cubiertas:['san',13,-13]};
 const CHECKED='2026 年 11 月核对';
 const SAY_ES='Hola, quisiera reservar para una persona el día ___ a las ___. Soy peregrino/a.';
 const PICKS={
@@ -921,11 +933,13 @@ function buildMap(){
  LIVE.forEach(r=>{CHUNK[r].forEach((c,i)=>h+=`<path class="segi" id="si-${c.id}" style="stroke:${COL[r]}" d="${dpath(c.p)}"/><path class="segt" id="st-${c.id}" d="${dpath(c.p)}"/><path class="seg" id="s-${c.id}" d="${dpath(c.p)}"/>`);h+=`<path class="sweep" id="sw-${r}" style="stroke:${COL[r]}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="${dpath(DR[r])}"/>`});
  ROUTES.forEach(r=>{if(r.open)h+=`<path class="rhit" data-r="${r.id}" d="${dpath(r.id==='fin'?DR_G.fin:DR[r.id])}"/>`});
  Object.keys(NODES).forEach(id=>h+=vig(id));
+ const pmHTML=()=>Object.keys(PICKS).map(i=>{const p=PICKS[i],m=PMAP[i],at=p.node?POS[p.node]:N[m[0]],dx=p.node?12:m[1],dy=p.node?-12:m[2];return `<g class="pm off" id="pm-${i}" data-pm="${i}" transform="translate(${at.map(v=>v.toFixed(1)).join(' ')})" tabindex="0" role="button" aria-label="精选：${p.n}"><g class="sc"><g transform="translate(${dx} ${dy})"><circle class="pmh" r="11"/><path class="pmi" d="M0-6L6 0L0 6L-6 0Z"/><text class="pmt" x="10" y="4">${p.n}</text></g></g></g>`}).join('');
  Object.keys(OFF).forEach(id=>{const a=N[NODES[id].xy],b=POS[id],mx=(a[0]+b[0])/2+(b[1]-a[1])*.14,my=(a[1]+b[1])/2-(b[0]-a[0])*.14;h+=`<path class="br" id="br-${id}" d="M${a[0]} ${a[1]}Q${mx.toFixed(1)} ${my.toFixed(1)} ${b[0]} ${b[1]}"/>`});
  const LAB={norte:[N.gij[0]-50,N.gij[1]-16],primitivo:[N.ovi[0]-60,N.ovi[1]+40],ingles:[N.fer[0]+14,N.fer[1]-4],plata:[N.mer[0]+12,N.mer[1]],portugues:[N.lis[0]+14,N.lis[1]+4],frances:[N.sjpp[0]+14,N.sjpp[1]+4],invierno:[N.mon[0]-30,N.mon[1]+26],aragones:[N.jac[0]+14,N.jac[1]+24],fin:[230,500]};
  ROUTES.forEach(r=>{h+=`<g transform="translate(${LAB[r.id].join(' ')})"><text class="rn sc2" id="rn-${r.id}">${r.n}</text></g>`});
  [['大 西 洋',40,430],['比 斯 开 湾',620,285]].forEach(([t,x,y])=>h+=`<g transform="translate(${x} ${y})"><g class="sc2"><rect class="seab" x="-48" y="-17" width="96" height="26"/><text class="seat" text-anchor="middle">${t}</text></g></g>`);
  Object.entries(NODES).forEach(([id,n])=>{const p=POS[id],l=LBL[id]||[12,0],an={m:'middle',e:'end'}[l[2]]||'start';h+=`<g class="node off ${n.side?'sd':''}" id="n-${id}" data-n="${id}" transform="translate(${p.map(v=>v.toFixed(1)).join(' ')})" tabindex="0" role="button"><g class="sc"><circle class="hit" r="17"/><circle class="halo" r="11"/>${n.side?`<circle class="pip" r="10.5"/><path class="ic" d="${ICON[n.side]}"/>`:'<circle class="pip" r="5.6"/>'}<text class="nm" x="${l[0]}" y="${l[1]}" text-anchor="${an}"></text><text class="pl" x="${l[0]}" y="${l[1]+15}" text-anchor="${an}">${PL[id]||''}</text></g></g>`});
+ h+=pmHTML();
  map.innerHTML=h;
 }
 let mvT;function fit(){map.classList.add('mv');clearTimeout(mvT);mvT=setTimeout(()=>map.classList.remove('mv'),180);map.setAttribute('viewBox',vb.map(v=>v.toFixed(1)).join(' '));const r=map.getBoundingClientRect(),k=Math.max(vb[2]/r.width,vb[3]/r.height);map.querySelectorAll('.sc,.sc2').forEach(g=>g.setAttribute('transform',`scale(${k})`))}
@@ -942,8 +956,9 @@ addEventListener('pointermove',e=>{if(!drag)return;const r=map.getBoundingClient
 addEventListener('pointerup',()=>drag=null);
 map.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY>0?1.12:.88)},{passive:false});
 addEventListener('resize',fit);
-map.addEventListener('click',e=>{if(moved>4)return;const g=e.target.closest('.node');if(g)return pick(g.dataset.n);const r=e.target.dataset&&e.target.dataset.r;if(r)chooseRoad(r)});
-map.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const g=e.target.closest('.node');if(g){e.preventDefault();pick(g.dataset.n)}}});
+map.addEventListener('click',e=>{if(moved>4)return;const m=e.target.closest('.pm');if(m)return openPick(m.dataset.pm);const g=e.target.closest('.node');if(g)return pick(g.dataset.n);const r=e.target.dataset&&e.target.dataset.r;if(r)chooseRoad(r)});
+map.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const m=e.target.closest('.pm');if(m){e.preventDefault();return openPick(m.dataset.pm)}const g=e.target.closest('.node');if(g){e.preventDefault();pick(g.dataset.n)}}});
+function openPick(i){S.lens='now';S.tab='taste';$('#right').classList.remove('min');save();render();const el=$('#pk-'+i),sh=$('#sheet');if(el){sh.scrollTop+=el.getBoundingClientRect().top-sh.getBoundingClientRect().top-8;el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1800)}}
 function pick(id){S.node=id;S.tab='here';$('#right').classList.remove('min');save();render();flyNode(id)}
 function chooseRoad(r){const first=!S.road;S.road=r;if(first){if(r==='portugues')S.plan='porto';else if(r==='fin'){S.plan='sarria';S.mux=true}else S.plan=S.days>=40?'full':'leon'}S.phase='play';S.tab='here';S.node=nodesOf(r).find(i=>!(S.foot[i]&&S.pin[i]))||nodesOf(r)[0];S.phase='play';S.tab='here';$('#chooser').hidden=true;save();render();flyRoad(r)}
 
@@ -1020,6 +1035,7 @@ function render0(){
  $('#who').innerHTML=`<h2>${road||!pv?ch.n:'还没选路'}</h2>${pv&&ch.life?`<small>${ch.life}</small>`:''}<p>${road||!pv?ch.d:'选好路，我再给你介绍同伴。'}</p><div class="quals">${qs}</div>`;
  const pc=Object.values(S.pin).filter(p=>p.s!=='skip').length;
  $('#tallies').innerHTML=`<div><b>${Object.keys(S.foot).length}</b>足迹</div><div><b>${pc}</b>行程中</div><div><b>${r.res.length}</b>必去</div>`;
+ Object.keys(PICKS).forEach(i=>{const g=$('#pm-'+i),p=PICKS[i],vis=S.phase==='play'&&S.lens==='now'&&!!road&&pickRoad(p,road);g.classList.toggle('off',!vis);g.classList.toggle('on',pinOn(pickKey(i)))});
  Object.entries(NODES).forEach(([id,n])=>{const g=$('#n-'+id),vis=n.route===road||S.done.includes(n.route);g.classList.toggle('off',!vis);g.classList.toggle('sel',id===S.node);g.classList.toggle('seen',pages(id)>0);g.classList.toggle('res',!!reson(id));g.querySelector('.nm').textContent=pv?n.past:n.now;const br=$('#br-'+id);if(br)br.classList.toggle('off',!vis);$('#d-'+id).classList.toggle('off',!vis);g.setAttribute('aria-label',pv?n.past:n.now);
   const pin=S.pin[id];g.querySelector('.pl').textContent=(PL[id]||'')+(S.foot[id]?' ◆':'')+(pin&&pin.s!=='skip'?' ▲':'');
   ['#s-','#si-','#st-','#d-'].forEach(q=>{const e=$(q+id);if(e){e.classList.toggle('l1',pages(id)===1);e.classList.toggle('l2',pages(id)===2)}})});
@@ -1058,7 +1074,7 @@ function rHere(){
 function rRoutes(){const sh=$('#sheet');sh.innerHTML=`<h2 class="h">路线</h2><p class="voice">读得越多，这里画得越满。</p>${bandsHTML(false)}`;wireBands(sh)}
 function pickDay(i,rows){const k=pickKey(i),l=ENDLOC[k]?null:LOC[k];const hit=rows.find(r=>r.segs&&r.segs.some(x=>ENDLOC[k]?ENDLOC[k][x.s]===x.k:l===x.s+x.k));return hit?hit.n:0}
 function picksHTML(r){const ids=Object.keys(PICKS).filter(i=>pickRoad(PICKS[i],r));if(!ids.length)return '';const rows=dayRows(S.plan,S.mux,S.pace,'',[],()=>0);ids.sort((x,y)=>(pickDay(x,rows)||999)-(pickDay(y,rows)||999));const act=p=>{const a=p.act;return a.t==='book'?`<a class="go" href="${a.url}" target="_blank" rel="noopener">${a.l}</a>`:a.t==='call'?`<a class="go" href="tel:${a.tel}">${a.l}</a>`:`<span class="pkw">${a.l}</span>`};
- return `<h3 class="sb">精选</h3><p class="help">我从官方页面、米其林和当地资料里挑了 ${ids.length} 个，${CHECKED}。分数不是标准，别处没有才算数。</p><div class="pks">${ids.map(i=>{const p=PICKS[i],a=p.act,k=pickKey(i),on=pinOn(k),n=pickDay(i,rows),fix=n?'':(r==='fin'?'mux':r==='portugues'?'porto':'full');return `<article class="pk"><p class="meta">${p.town}${n?` · 第 ${n} 天`:' · 不在当前路线上'}</p><h3>${p.n}</h3><p>${p.why}</p><p class="pkn">${p.note}${a.p?` ${a.p}`:''}</p>${a.say?`<p class="say1" lang="es">${SAY_ES}</p>`:''}<p class="pkc">${p.eur==null?'价格未查到':p.eur===0?'免费':`${p.est?'约 ':''}€${p.eur}，约 ${yuan(pickYen(p))}`}${p.extra?' · 多留一天':''}</p><div class="row">${act(p)}${n?`<button class="mini" type="button" data-pk="${i}" aria-pressed="${!!on}">${on?'已加入行程':'加入行程'}</button>`:`<button class="mini" type="button" data-pkf="${i}" data-f="${fix}">${fix==='mux'?'加上世界尽头并加入':fix==='porto'?'改走葡萄牙之路并加入':'改走全程并加入'}</button>`}${p.node?`<button class="mini" type="button" data-pkn="${p.node}">看详情</button>`:''}</div>${p.src?`<p class="pks1">${p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ')}</p>`:''}</article>`}).join('')}</div>`}
+ return `<h3 class="sb">精选</h3><p class="help">我从官方页面、米其林和当地资料里挑了 ${ids.length} 个，${CHECKED}。分数不是标准，别处没有才算数。</p><div class="pks">${ids.map(i=>{const p=PICKS[i],a=p.act,k=pickKey(i),on=pinOn(k),n=pickDay(i,rows),fix=n?'':(r==='fin'?'mux':r==='portugues'?'porto':'full');return `<article class="pk" id="pk-${i}"><p class="meta">${p.town}${n?` · 第 ${n} 天`:' · 不在当前路线上'}</p><h3>${p.n}</h3><p>${p.why}</p><p class="pkn">${p.note}${a.p?` ${a.p}`:''}</p>${a.say?`<p class="say1" lang="es">${SAY_ES}</p>`:''}<p class="pkc">${p.eur==null?'价格未查到':p.eur===0?'免费':`${p.est?'约 ':''}€${p.eur}，约 ${yuan(pickYen(p))}`}${p.extra?' · 多留一天':''}</p><div class="row">${act(p)}${n?`<button class="mini" type="button" data-pk="${i}" aria-pressed="${!!on}">${on?'已加入行程':'加入行程'}</button>`:`<button class="mini" type="button" data-pkf="${i}" data-f="${fix}">${fix==='mux'?'加上世界尽头并加入':fix==='porto'?'改走葡萄牙之路并加入':'改走全程并加入'}</button>`}${p.node?`<button class="mini" type="button" data-pkn="${p.node}">看详情</button>`:''}</div>${p.src?`<p class="pks1">${p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ')}</p>`:''}</article>`}).join('')}</div>`}
 function pickAdd(i){const p=PICKS[i],k=pickKey(i),n=NODES[k];if(pinOn(k)){delete S.pin[k];return}if(n){const c=n.N.c[0];S.pin[k]={s:c.s,yen:c.yen||0,day:c.day||0,c:0}}else S.pin[k]={s:'must',yen:pickYen(p),day:p.extra?1:0,c:0}}
 function wirePicks(){document.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{pickAdd(b.dataset.pk);save();render()});
  document.querySelectorAll('[data-pkf]').forEach(b=>b.onclick=()=>{if(b.dataset.f==='mux')S.mux=true;else S.plan=b.dataset.f;if(!pinOn(pickKey(b.dataset.pkf)))pickAdd(b.dataset.pkf);save();render()});
