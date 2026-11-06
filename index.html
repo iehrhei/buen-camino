@@ -299,7 +299,7 @@ body:has(.intro:not(.gone)) :is(.left,.right,.frame){visibility:hidden}
 .pk a.go{color:var(--card);text-decoration:none;display:inline-flex;align-items:center}
 .pk [aria-pressed="true"]{background:var(--ink);color:var(--card)}
 .dayl{display:grid}
-.day{display:grid;grid-template-columns:88px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid var(--line,rgba(40,30,20,.25))}
+.day{display:grid;grid-template-columns:112px 1fr;gap:8px;padding:6px 0;border-bottom:1px solid var(--line,rgba(40,30,20,.25))}
 .day h3{font-size:15px;margin:0}
 .day small{font-weight:400;color:var(--mute);font-size:12px}
 .dn{font-size:12px;color:var(--mute);margin:2px 0 0;line-height:1.35}
@@ -538,35 +538,61 @@ const SAFE={
 };
 
 /* Curated stops and day-by-day stages. Prices are in euros; a pick's stage is the day it falls on. */
-const STAGES=[['圣让','龙塞斯瓦列斯',24.2],['龙塞斯瓦列斯','苏维里',21.4],['苏维里','潘普洛纳',20.4],['潘普洛纳','普恩特拉雷纳',23.9],['普恩特拉雷纳','埃斯特拉',21.6],['埃斯特拉','洛斯阿尔科斯',21.3],['洛斯阿尔科斯','洛格罗尼奥',27.6],['洛格罗尼奥','纳赫拉',29],['纳赫拉','圣多明各',20.7],['圣多明各','贝洛拉多',22],['贝洛拉多','圣胡安-德奥尔特加',23.9],['圣胡安-德奥尔特加','布尔戈斯',25.8],['布尔戈斯','奥尼略斯',20.3],['奥尼略斯','卡斯特罗赫里斯',19.9],['卡斯特罗赫里斯','弗罗米斯塔',24.7],['弗罗米斯塔','卡里翁',18.8],['卡里翁','特拉迪略斯',26.3],['特拉迪略斯','贝西亚诺斯',23.2],['贝西亚诺斯','曼西利亚',26.3],['曼西利亚','莱昂',18.5],['莱昂','奥斯皮塔尔-德奥尔维戈',31.8],['奥斯皮塔尔-德奥尔维戈','阿斯托加',16.5],['阿斯托加','拉瓦纳尔',20.2],['拉瓦纳尔','莫利纳塞卡',24.7],['莫利纳塞卡','比利亚弗兰卡',31.9],['比利亚弗兰卡','奥塞夫雷罗',27.8],['奥塞夫雷罗','特里亚卡斯特拉',20.8],['特里亚卡斯特拉','萨里亚',17.8],['萨里亚','波尔托马林',22.2],['波尔托马林','帕拉斯德雷',24.8],['帕拉斯德雷','阿尔苏阿',28.5],['阿尔苏阿','奥佩德罗索',19.3],['奥佩德罗索','圣地亚哥',19.4]];
-const PLANSTART={full:1,leon:21,sarria:29};
+const STAGESF=[['圣让','龙塞斯瓦列斯',24.2],['龙塞斯瓦列斯','苏维里',21.4],['苏维里','潘普洛纳',20.4],['潘普洛纳','普恩特拉雷纳',23.9],['普恩特拉雷纳','埃斯特拉',21.6],['埃斯特拉','洛斯阿尔科斯',21.3],['洛斯阿尔科斯','洛格罗尼奥',27.6],['洛格罗尼奥','纳赫拉',29],['纳赫拉','圣多明各',20.7],['圣多明各','贝洛拉多',22],['贝洛拉多','圣胡安-德奥尔特加',23.9],['圣胡安-德奥尔特加','布尔戈斯',25.8],['布尔戈斯','奥尼略斯',20.3],['奥尼略斯','卡斯特罗赫里斯',19.9],['卡斯特罗赫里斯','弗罗米斯塔',24.7],['弗罗米斯塔','卡里翁',18.8],['卡里翁','特拉迪略斯',26.3],['特拉迪略斯','贝西亚诺斯',23.2],['贝西亚诺斯','曼西利亚',26.3],['曼西利亚','莱昂',18.5],['莱昂','奥斯皮塔尔-德奥尔维戈',31.8],['奥斯皮塔尔-德奥尔维戈','阿斯托加',16.5],['阿斯托加','拉瓦纳尔',20.2],['拉瓦纳尔','莫利纳塞卡',24.7],['莫利纳塞卡','比利亚弗兰卡',31.9],['比利亚弗兰卡','奥塞夫雷罗',27.8],['奥塞夫雷罗','特里亚卡斯特拉',20.8],['特里亚卡斯特拉','萨里亚',17.8],['萨里亚','波尔托马林',22.2],['波尔托马林','帕拉斯德雷',24.8],['帕拉斯德雷','阿尔苏阿',28.5],['阿尔苏阿','奥佩德罗索',19.3],['奥佩德罗索','圣地亚哥',19.4]];
+const STAGESP=[['波尔图','比拉里尼奥',26.5],['比拉里尼奥','巴塞卢什',27.3],['巴塞卢什','蓬蒂-迪利马',34.5],['蓬蒂-迪利马','鲁比昂斯',17.4],['鲁比昂斯','图伊',19.1],['图伊','波里尼奥',18.7],['波里尼奥','阿尔卡德',23],['阿尔卡德','蓬特韦德拉',12],['蓬特韦德拉','卡尔达斯',21],['卡尔达斯','帕德龙',18.6],['帕德龙','圣地亚哥',24.3]];
+const STAGESE=[['圣地亚哥','内格雷拉',20],['内格雷拉','奥尔韦罗亚',34],['奥尔韦罗亚','科尔库比翁',20],['科尔库比翁','菲斯特拉',14],['菲斯特拉','穆希亚',29]];
+const SETS={f:STAGESF,p:STAGESP,e:STAGESE};
+const PLANSEG={full:['f',1],leon:['f',21],sarria:['f',29],porto:['p',1]};
+/* where each stop falls: set + stage number */
+const LOC={ronc:'f1',pyr:'f1',irache:'f6',franco:'f7',soriano:'f7',sdc:'f9',granon:'f10',oca:'f11',atapuerca:'f12',burgos:'f12',cast:'f14',canal:'f15',leonct:'f20',leon:'f20',orbigo:'f21',astorga:'f22',rabanal:'f23',cruz:'f24',medulas:'f24',cebreiro:'f26',valcarce:'f26',melide:'f31',tarta:'f33',fran:'p1',bar:'p2',pdl:'p3',labruja:'p4',lamp:'p5',tui:'p5',simon:'p7',barosa:'p9',boat:'p9',pep:'p10',pad:'p10',pma:'e1',ezaro:'e3',fis:'e4',lonja:'e4',turinan:'e5',lires:'e5',mux:'e5',perc:'e5',cong:'e5'};
+const ENDLOC={abastos:{f:33,p:11},cubiertas:{f:33,p:11}};
 const CHECKED='2026 年 11 月核对';
 const SAY_ES='Hola, quisiera reservar para una persona el día ___ a las ___. Soy peregrino/a.';
 const PICKS={
- irache:{n:'伊拉切葡萄酒泉',town:'阿耶吉',stage:6,node:'irache',why:'墙上真的有一个出红酒的龙头，这是法国之路上最特别的一口酒。',eur:0,src:[['Viaje Camino de Santiago','https://viajecaminodesantiago.com/curiosidades/la-fuente-del-vino-de-irache/']],act:{t:'walk',l:'不用预约',p:'每天 8 点到 20 点供应，最多约 100 升。'},note:'开放时间和限量以酒庄公告为准。'},
- franco:{n:'佛朗哥-西班牙酒庄',town:'洛格罗尼奥',stage:7,extra:'参观酒庄',why:'不用离开洛格罗尼奥，就能走进里奥哈的老酒窖。它在城里，步行者也能去。',eur:null,src:[['Guía Peñín','https://guiapenin.wine/winetourism-bodegas-franco-espanolas']],act:{t:'book',url:'https://francoespanolas.com/visitas/',l:'去酒庄官网预约'},note:'只接受预约，平日只有上午。价格我没查到，需要多留一天。'},
- soriano:{n:'索里亚诺酒吧的蘑菇',town:'洛格罗尼奥',stage:7,why:'月桂街 200 米内有 60 多家小店，这家只靠一口烤蘑菇出名，大蒜欧芹酱的配方不外传。',eur:null,src:[['Que.es','https://www.que.es/2026/10/10/mejor-calle-para-comer-europa/'],['Salir.com','https://www.salir.com/bar-soriano-logrono-neg-131983.html']],act:{t:'walk',l:'不用预约',p:'资料显示 11:30 到 15:00、19:00 到 23:30 营业。'},note:'价格没查到，每家到柜台问。休息日资料未写明。'},
- atapuerca:{n:'阿塔普埃尔卡遗址',town:'阿塔普埃尔卡',stage:12,why:'朝圣路经过的村子，就是世界级古人类遗址的入口，可以从这里坐接驳车进山。',eur:7,closed:[1],closedMonth:[0],closedTxt:'周一不开放，1 月全月关闭',src:[['Fundación Atapuerca：时间','https://www.atapuerca.org/es/atapuerca/Horarios'],['Fundación Atapuerca：票价','https://www.atapuerca.org/es/ficha/Z22C2C397-95C0-2D63-B31B92B3E45B0BE1/tarifas-de-los-yacimientos-y-centro-de-arqueologia-experimental-carex']],act:{t:'call',tel:'+34947421000',l:'电话预约 947 421 000',mail:'reservasatapuerca@fundacionatapuerca.es'},note:'必须预约。平日通常只有 11 点一场，约 1 小时 45 分，这天要早点从圣胡安出发。天气差可能取消。'},
- burgos:{n:'布尔戈斯大教堂',town:'布尔戈斯',stage:12,why:'世界遗产，也是全程最好的哥特式建筑之一。朝圣者凭证件能买便宜票。',eur:6,src:[['布尔戈斯大教堂官网','https://catedraldeburgos.es/visitas']],act:{t:'book',url:'https://shop.articketing.com/monuments/catedral-santa-maria-de-burgos/tickets?s=catedral-de-burgos',l:'去官网买票'},note:'朝圣者票 €6，要带朝圣者护照。11 月到次年 3 月 18 日 18:00 停止入场，其余时间 18:30。弥撒时不开放参观。'},
- leon:{n:'莱昂大教堂的彩窗',town:'莱昂',stage:20,why:'进门抬头就是大片中世纪彩色玻璃，这是全程最震撼的室内景色之一。',eur:7,src:[['莱昂市旅游局 2026','https://leon.es/wp-content/uploads/2026/03/Horarios-ciudad-de-Leon-a-partir-del-1-de-abril-y-Semana-Santa-26-.pdf'],['Diario de León','https://www.diariodeleon.es/leon/260910/2096862/catedral-leon-prepara-otono-zonas-visitarse-protege-vidriera.html']],act:{t:'walk',l:'到售票处买票',p:'平日 9:30 到 13:30、16:00 到 19:00。'},note:'朝圣者票 €7。周末和节假日时间不同，部分彩窗正在修复。'},
- cocido:{n:'马拉加托炖菜',town:'阿斯托加',stage:22,node:'astorga',why:'先吃肉，再吃鹰嘴豆，最后喝汤。相传赶骡人怕路上突然要走，先吃最顶饱的。',eur:27,est:1,src:[['Take a Chef','https://www.takeachef.com/blog/mejor-cocido-maragato-astorga'],['Gastroranking','https://gastroranking.es/r/casa-maragata_27397']],act:{t:'call',tel:'+34987618118',l:'电话预约 Casa Maragata',say:1},note:'约 €27，主要是午饭。营业日我没有可靠的公开来源，预约时一定要确认。'},
- rabanal:{n:'拉瓦纳尔晚祷',town:'拉瓦纳尔',stage:23,node:'rabanal',why:'村子很小，却有本笃会修士每天唱格列高利圣咏。这是一路上最安静的一个晚上。',eur:0,src:[['Diario de León','https://www.diariodeleon.es/leon/provincia/250801/2055809/encantador-pueblo-leon-puedes-escuchar-cantos-gregorianos.html']],act:{t:'walk',l:'不用预约',p:'2025 年的报道说 19:00 晚祷，21:30 夜祷。'},note:'时间请到村里再确认。这一天要住在拉瓦纳尔。'},
- medulas:{n:'拉斯梅德拉斯',town:'比尔索',stage:24,extra:'拉斯梅德拉斯',node:'medulas',why:'看着像天然奇观，其实是罗马人把山冲垮后留下的金矿。',eur:79,closedSoft:[2],closedTxt:'罗马矿道周二关闭',src:[['跟团线路','https://www.barcelo.com/guia-turismo/es/espana/leon/actividades/58611/'],['世界遗产资料','https://www.worldheritagesite.org/list/id/803']],act:{t:'book',url:'https://www.barcelo.com/guia-turismo/es/espana/leon/actividades/58611/',l:'查看跟团线路'},note:'不在主线上，从蓬费拉达跟半日团，约 €79，讲解是西班牙语。需要多留一天。'},
- melide:{n:'梅利德章鱼',town:'梅利德',stage:31,node:'melide',why:'老板用剪刀把章鱼剪在木盘上，撒盐、淋油、撒红椒粉。这是法国之路上最有名的一顿饭之一。',eur:null,src:[['A Garnacha 介绍','https://viajecaminodesantiago.com/en/curiosities/garnacha-an-obligatory-stop/'],['梅利德章鱼店比较','https://www.elviajedesofi.com/pulperias-en-melide-el-mejor-pulpo-del-pais/amp/']],act:{t:'walk',l:'通常不用预约',p:'Ezequiel 平时一般不用订，7、8 月结伴去可以先订。'},note:'A Garnacha 就在路上，也可以试试。价格以店内为准。'},
- abastos:{n:'Abastos 2.0 市场小馆',town:'圣地亚哥',stage:33,why:'开在菜市场的摊位里，一张大桌，按当天食材做菜。它在 2026 年米其林指南里。',eur:50,est:1,closed:[0],closedTxt:'周日不营业',src:[['MICHELIN Guide','https://guide.michelin.com/tr/en/galicia/santiago-de-compostela/restaurant/taberna-abastos-2-0']],act:{t:'call',tel:'+34654015937',l:'电话预约 654 01 59 37',say:1},note:'必须预约。套餐约 €50 起，平日 12:00 到 15:30、20:00 到 23:00。'},
- cubiertas:{n:'大教堂屋顶',town:'圣地亚哥',stage:33,why:'走到屋顶才看得见整座城，也能换个角度看你刚走完的那条路。',eur:12,src:[['独立指南','https://catedraldesantiago.online/informacion-practica-catedral-santiago']],act:{t:'book',url:'https://visitas.catedraldesantiago.es/museo-catedral-cubiertas-y-torre-de-la-carraca/',l:'去售票页'},note:'朝圣者约 €12，约 60 分钟。这是非官方指南给出的信息，买票前核对。轮椅无法进入。'}
+ irache:{n:'伊拉切葡萄酒泉',town:'阿耶吉',node:'irache',why:'墙上真的有一个出红酒的龙头，这是法国之路上最特别的一口酒。',eur:0,src:[['Viaje Camino de Santiago','https://viajecaminodesantiago.com/curiosidades/la-fuente-del-vino-de-irache/']],act:{t:'walk',l:'不用预约',p:'每天 8 点到 20 点供应，最多约 100 升。'},note:'开放时间和限量以酒庄公告为准。'},
+ franco:{n:'佛朗哥-西班牙酒庄',town:'洛格罗尼奥',extra:'参观酒庄',why:'不用离开洛格罗尼奥，就能走进里奥哈的老酒窖。它在城里，步行者也能去。',eur:null,src:[['Guía Peñín','https://guiapenin.wine/winetourism-bodegas-franco-espanolas']],act:{t:'book',url:'https://francoespanolas.com/visitas/',l:'去酒庄官网预约'},note:'只接受预约，平日只有上午。价格我没查到，需要多留一天。'},
+ soriano:{n:'索里亚诺酒吧的蘑菇',town:'洛格罗尼奥',why:'月桂街 200 米内有 60 多家小店，这家只靠一口烤蘑菇出名，大蒜欧芹酱的配方不外传。',eur:null,src:[['Que.es','https://www.que.es/2026/10/10/mejor-calle-para-comer-europa/'],['Salir.com','https://www.salir.com/bar-soriano-logrono-neg-131983.html']],act:{t:'walk',l:'不用预约',p:'资料显示 11:30 到 15:00、19:00 到 23:30 营业。'},note:'价格没查到，每家到柜台问。休息日资料未写明。'},
+ atapuerca:{n:'阿塔普埃尔卡遗址',town:'阿塔普埃尔卡',why:'朝圣路经过的村子，就是世界级古人类遗址的入口，可以从这里坐接驳车进山。',eur:7,closed:[1],closedMonth:[0],closedTxt:'周一不开放，1 月全月关闭',src:[['Fundación Atapuerca：时间','https://www.atapuerca.org/es/atapuerca/Horarios'],['Fundación Atapuerca：票价','https://www.atapuerca.org/es/ficha/Z22C2C397-95C0-2D63-B31B92B3E45B0BE1/tarifas-de-los-yacimientos-y-centro-de-arqueologia-experimental-carex']],act:{t:'call',tel:'+34947421000',l:'电话预约 947 421 000',mail:'reservasatapuerca@fundacionatapuerca.es'},note:'必须预约。平日通常只有 11 点一场，约 1 小时 45 分，这天要早点从圣胡安出发。天气差可能取消。'},
+ burgos:{n:'布尔戈斯大教堂',town:'布尔戈斯',why:'世界遗产，也是全程最好的哥特式建筑之一。朝圣者凭证件能买便宜票。',eur:6,src:[['布尔戈斯大教堂官网','https://catedraldeburgos.es/visitas']],act:{t:'book',url:'https://shop.articketing.com/monuments/catedral-santa-maria-de-burgos/tickets?s=catedral-de-burgos',l:'去官网买票'},note:'朝圣者票 €6，要带朝圣者护照。11 月到次年 3 月 18 日 18:00 停止入场，其余时间 18:30。弥撒时不开放参观。'},
+ leonct:{n:'莱昂大教堂的彩窗',town:'莱昂',why:'进门抬头就是大片中世纪彩色玻璃，这是全程最震撼的室内景色之一。',eur:7,src:[['莱昂市旅游局 2026','https://leon.es/wp-content/uploads/2026/03/Horarios-ciudad-de-Leon-a-partir-del-1-de-abril-y-Semana-Santa-26-.pdf'],['Diario de León','https://www.diariodeleon.es/leon/260910/2096862/catedral-leon-prepara-otono-zonas-visitarse-protege-vidriera.html']],act:{t:'walk',l:'到售票处买票',p:'平日 9:30 到 13:30、16:00 到 19:00。'},note:'朝圣者票 €7。周末和节假日时间不同，部分彩窗正在修复。'},
+ cocido:{n:'马拉加托炖菜',town:'阿斯托加',node:'astorga',why:'先吃肉，再吃鹰嘴豆，最后喝汤。相传赶骡人怕路上突然要走，先吃最顶饱的。',eur:27,est:1,src:[['Take a Chef','https://www.takeachef.com/blog/mejor-cocido-maragato-astorga'],['Gastroranking','https://gastroranking.es/r/casa-maragata_27397']],act:{t:'call',tel:'+34987618118',l:'电话预约 Casa Maragata',say:1},note:'约 €27，主要是午饭。营业日我没有可靠的公开来源，预约时一定要确认。'},
+ rabanal:{n:'拉瓦纳尔晚祷',town:'拉瓦纳尔',node:'rabanal',why:'村子很小，却有本笃会修士每天唱格列高利圣咏。这是一路上最安静的一个晚上。',eur:0,src:[['Diario de León','https://www.diariodeleon.es/leon/provincia/250801/2055809/encantador-pueblo-leon-puedes-escuchar-cantos-gregorianos.html']],act:{t:'walk',l:'不用预约',p:'2025 年的报道说 19:00 晚祷，21:30 夜祷。'},note:'时间请到村里再确认。这一天要住在拉瓦纳尔。'},
+ medulas:{n:'拉斯梅德拉斯',town:'比尔索',extra:'拉斯梅德拉斯',node:'medulas',why:'看着像天然奇观，其实是罗马人把山冲垮后留下的金矿。',eur:79,closedSoft:[2],closedTxt:'罗马矿道周二关闭',src:[['跟团线路','https://www.barcelo.com/guia-turismo/es/espana/leon/actividades/58611/'],['世界遗产资料','https://www.worldheritagesite.org/list/id/803']],act:{t:'book',url:'https://www.barcelo.com/guia-turismo/es/espana/leon/actividades/58611/',l:'查看跟团线路'},note:'不在主线上，从蓬费拉达跟半日团，约 €79，讲解是西班牙语。需要多留一天。'},
+ melide:{n:'梅利德章鱼',town:'梅利德',node:'melide',why:'老板用剪刀把章鱼剪在木盘上，撒盐、淋油、撒红椒粉。这是法国之路上最有名的一顿饭之一。',eur:null,src:[['A Garnacha 介绍','https://viajecaminodesantiago.com/en/curiosities/garnacha-an-obligatory-stop/'],['梅利德章鱼店比较','https://www.elviajedesofi.com/pulperias-en-melide-el-mejor-pulpo-del-pais/amp/']],act:{t:'walk',l:'通常不用预约',p:'Ezequiel 平时一般不用订，7、8 月结伴去可以先订。'},note:'A Garnacha 就在路上，也可以试试。价格以店内为准。'},
+ abastos:{roads:['frances','portugues'],n:'Abastos 2.0 市场小馆',town:'圣地亚哥',why:'开在菜市场的摊位里，一张大桌，按当天食材做菜。它在 2026 年米其林指南里。',eur:50,est:1,closed:[0],closedTxt:'周日不营业',src:[['MICHELIN Guide','https://guide.michelin.com/tr/en/galicia/santiago-de-compostela/restaurant/taberna-abastos-2-0']],act:{t:'call',tel:'+34654015937',l:'电话预约 654 01 59 37',say:1},note:'必须预约。套餐约 €50 起，平日 12:00 到 15:30、20:00 到 23:00。'},
+ cubiertas:{roads:['frances','portugues'],n:'大教堂屋顶',town:'圣地亚哥',why:'走到屋顶才看得见整座城，也能换个角度看你刚走完的那条路。',eur:12,src:[['独立指南','https://catedraldesantiago.online/informacion-practica-catedral-santiago']],act:{t:'book',url:'https://visitas.catedraldesantiago.es/museo-catedral-cubiertas-y-torre-de-la-carraca/',l:'去售票页'},note:'朝圣者约 €12，约 60 分钟。这是非官方指南给出的信息，买票前核对。轮椅无法进入。'},
+ fran:{road:'portugues',n:'波尔图大三明治',town:'波尔图',node:'fran',why:'火腿、牛排和香肠夹进面包，再盖芝士、浇酱。这顿很适合放在出发前。',eur:14,est:1,act:{t:'walk',l:'到店点餐'},note:'价格是估计。这顿比较顶，别安排在要走长路的中午。'},
+ bar:{road:'portugues',n:'巴塞卢什周四集市',town:'巴塞卢什',node:'bar',why:'葡萄牙公鸡的传说从这里开始，集市只在周四开。',eur:0,onlyDay:[4],onlyTxt:'集市只在周四开',act:{t:'walk',l:'不用预约'},note:'想赶上就要倒推出发日。'},
+ pdl:{road:'portugues',n:'利马河长桥',town:'蓬蒂-迪利马',node:'pdl',why:'1359 年建成的长桥还在用，河岸上站着一排木雕罗马士兵。',eur:0,act:{t:'walk',l:'不用预约'},note:'沙滩集市每两周一次，逢周一。'},
+ labruja:{road:'portugues',n:'翻过拉布鲁雅山',town:'蓬蒂-迪利马以北',node:'labruja',why:'这是葡萄牙段最大的一次爬升，也是这条路最像山路的一天。',eur:0,act:{t:'walk',l:'不用预约'},note:'出发前带够水，这段约 9 公里没有补给。'},
+ tui:{road:'portugues',n:'走过国际桥',town:'图伊',node:'tui',why:'一座桥走完，葡萄牙就变成西班牙，手表也要拨快一小时。',eur:0,act:{t:'walk',l:'不用预约'},note:'过桥后警察电话改用 062 或 091。'},
+ barosa:{road:'portugues',n:'巴罗萨瀑布',town:'巴罗',node:'barosa',why:'只绕 500 米，就能看到约 30 米的瀑布和河边的老水磨。',eur:0,act:{t:'walk',l:'不用预约'},note:'水量随季节变化。'},
+ boat:{road:'portugues',n:'圣徒水路',town:'比拉诺瓦',node:'boat',why:'传说圣雅各的遗体从这条水路到达，今天还能坐船沿河上行。',eur:30,act:{t:'walk',l:'到码头询问'},note:'这是灵性支线，开船时间跟着潮水走，要提前一天问好，建议多留 2 天。'},
+ pep:{road:'portugues',n:'帕德龙小辣椒',town:'帕德龙',node:'pep',why:'一盘里有的辣、有的不辣，吃的时候全靠运气。',eur:8,est:1,monthsOnly:[4,5,6,7,8,9],monthsTxt:'小辣椒的季节是 5 月到 10 月',act:{t:'walk',l:'不用预约'},note:'价格是估计。'},
+ pma:{road:'fin',n:'马塞拉桥',town:'内格雷拉前',node:'pma',why:'石桥建在更早的罗马桥墩上，这是离开圣地亚哥后第一处值得停下的地方。',eur:0,act:{t:'walk',l:'不用预约'},note:'就在路上。'},
+ ezaro:{road:'fin',n:'埃扎罗瀑布',town:'埃扎罗',node:'ezaro',why:'一条河在平多山脚下直接落进大海。',eur:0,act:{t:'walk',l:'不用预约'},note:'不在主线上，要绕路或坐车。夏季周六晚上有灯光，出发前再查当年安排。'},
+ fis:{road:'fin',n:'零公里海角',town:'菲斯特拉',node:'fis',why:'灯塔下的贝壳路标写着 0.00 公里，这是很多人心里的终点。',eur:0,act:{t:'walk',l:'不用预约'},note:'不要烧鞋和衣服，这里已经禁止。别靠近礁石。'},
+ lonja:{road:'fin',n:'鱼市拍卖',town:'菲斯特拉',node:'lonja',why:'这是加利西亚第一座专门为游客设观看台的鱼市。',eur:0,act:{t:'walk',l:'下午再去'},note:'官方建议午后过来，先看船回港，再看拍卖。'},
+ turinan:{road:'fin',n:'图里尼安角的日落',town:'图里尼安角',node:'turinan',why:'这里比菲斯特拉更靠西，一年有两段时间是欧洲大陆最后看到日落的地方。',eur:0,sunset:1,act:{t:'walk',l:'不用预约'},note:'不在路线上，交通要另算。'},
+ lires:{road:'fin',n:'利雷斯河口',town:'内米尼亚',node:'lires',why:'夏天低潮时，可以涉水穿过一片安静的河口。',eur:0,act:{t:'walk',l:'看好潮汐'},note:'只在低潮时涉水，没把握就走桥。'}
 };
+const pickRoad=(p,r)=>p.roads?p.roads.includes(r):(p.road||'frances')===r;
+const pickKey=i=>PICKS[i].node||i;
+function pickOfKey(k){return PICKS[k]?k:Object.keys(PICKS).find(i=>PICKS[i].node===k)}
 function pickYen(p){return p.eur==null?0:p.eur*8}
-function dayRows(plan,start,chosen){
- const s0=PLANSTART[plan];if(!s0)return null;const out=[];let d=start?new Date(start+'T12:00:00'):null,n=0;
+function nameOf(k){const i=pickOfKey(k);return i?PICKS[i].n:NODES[k]?NODES[k].now:k}
+function segsFor(plan,mux){const a=PLANSEG[plan];if(!a)return [];const out=[],add=(s,from)=>SETS[s].forEach((x,n)=>{if(n+1>=from)out.push({s,k:n+1,from:x[0],to:x[1],km:x[2]})});add(a[0],a[1]);if(mux)add('e',1);return out}
+function locOf(k,mux){const e=ENDLOC[k];if(e)return null;return LOC[k]}
+function placeRows(plan,mux,pace){const rows=[],segs=[];segsFor(plan,mux).forEach(x=>{if(x.km>pace*1.4){const h=Math.round(x.km/2*10)/10;segs.push({...x,to:x.to+'方向',km:h,part:1,noTown:1});segs.push({...x,from:'途中',km:Math.round((x.km-h)*10)/10})}else segs.push({...x})});
+ let cur=null;segs.forEach(x=>{if(cur&&!cur.noTown&&!x.part&&cur.km+x.km<=pace*1.25){cur.km=Math.round((cur.km+x.km)*10)/10;cur.to=x.to;cur.segs.push(x)}else{cur={from:x.from,to:x.to,km:x.km,noTown:x.noTown,segs:[x]};rows.push(cur)}});return rows}
+function inSeg(k,x){const e=ENDLOC[k];if(e)return !x.part&&e[x.s]===x.k;const l=LOC[k];return !!l&&!x.part&&l===x.s+x.k}
+function dayRows(plan,mux,pace,start,keys,dayOf){const base=placeRows(plan,mux,pace),out=[];let d=start?new Date(start+'T12:00:00'):null,n=0;
  const push=o=>{n++;const r={n,...o};if(d){r.date=new Date(d);d=new Date(d.getTime()+864e5)}out.push(r)};
- for(let k=s0;k<=33;k++){const st=STAGES[k-1],ps=chosen.filter(i=>PICKS[i].stage===k);push({k,from:st[0],to:st[1],km:st[2],ps:ps.filter(i=>!PICKS[i].extra)});
-  ps.filter(i=>PICKS[i].extra).forEach(i=>push({rest:1,to:st[1],ps:[i]}))}
- return out;
-}
-function dayIssues(r){const out=[];if(!r.date)return out;const w=r.date.getDay(),m=r.date.getMonth();
- r.ps.forEach(i=>{const p=PICKS[i];if((p.closed||[]).includes(w)||(p.closedMonth||[]).includes(m))out.push({i,hard:1,t:`${p.n}：${p.closedTxt}`});else if((p.closedSoft||[]).includes(w))out.push({i,t:`${p.n}：${p.closedTxt}`})});
- if(r.k===1&&(m>=10||m<=2))out.push({t:'11 月到 3 月拿破仑路线关闭，要走瓦尔卡洛斯路线'});
+ base.forEach(r=>{const here=keys.filter(k=>r.segs.some(x=>inSeg(k,x)));push({...r,ps:here.filter(k=>!dayOf(k))});here.filter(dayOf).forEach(k=>{for(let t=0;t<dayOf(k);t++)push({rest:1,to:r.to,ps:t?[]:[k]})})});
+ return out}
+function dayIssues(r){const out=[];if(!r.date)return out;const w=r.date.getDay(),m=r.date.getMonth(),md=(m+1)*100+r.date.getDate();
+ r.ps.forEach(k=>{const i=pickOfKey(k);if(!i)return;const p=PICKS[i];if((p.closed||[]).includes(w)||(p.closedMonth||[]).includes(m))out.push({hard:1,t:`${p.n}：${p.closedTxt}`});else if(p.onlyDay&&!p.onlyDay.includes(w))out.push({hard:1,t:`${p.n}：${p.onlyTxt}`});else if(p.monthsOnly&&!p.monthsOnly.includes(m))out.push({hard:1,t:`${p.n}：${p.monthsTxt}`});else if((p.closedSoft||[]).includes(w))out.push({t:`${p.n}：${p.closedTxt}`});if(p.sunset&&!((md>=324&&md<=424)||(md>=818&&md<=919)))out.push({t:`${p.n}：这天不是欧洲大陆最后的日落`})});
+ if(r.segs&&r.segs.some(x=>x.s==='f'&&x.k===1)&&(m>=10||m<=2))out.push({t:'11 月到 3 月拿破仑路线关闭，要走瓦尔卡洛斯路线'});
  return out}
 
 /* ---------- Buen Camino: who the ghost is ---------- */
@@ -772,8 +798,9 @@ const EATFACT='中世纪的朝圣者主要吃粗面包、粥、豆子，喝当�
 const $=s=>document.querySelector(s);
 const yuan=n=>(n<0?'−':'')+'¥'+Math.abs(Math.round(n)).toLocaleString('en-US');
 /* ---------- state ---------- */
-const NEW=()=>({phase:'cover',page:0,why:'none',from:'cn',lens:'past',road:null,node:null,tab:'here',hp:6,coin:3,faith:4,foot:{},pin:{},plan:'leon',mux:false,pace:22,days:14,budget:25000,comfort:0,done:[],picks:{},start:''});
+const NEW=()=>({phase:'cover',page:0,why:'none',from:'cn',lens:'past',road:null,node:null,tab:'here',hp:6,coin:3,faith:4,foot:{},pin:{},plan:'leon',mux:false,pace:22,days:14,budget:25000,comfort:0,done:[],start:''});
 let S=NEW();try{const r=JSON.parse(localStorage.getItem('buen-camino-v1'));if(r)S={...S,...r}}catch(e){}
+if(S.picks){Object.keys(S.picks).forEach(i=>{const id=i==='leon'?'leonct':i,p=PICKS[id];if(p){const k=p.node||id;if(!S.pin[k]){const c=NODES[k]&&NODES[k].N.c[0];S.pin[k]=c?{s:c.s,yen:c.yen||0,day:c.day||0,c:0}:{s:'must',yen:pickYen(p),day:p.extra?1:0,c:0}}}});delete S.picks}
 const save=()=>{try{localStorage.setItem('buen-camino-v1',JSON.stringify(S))}catch(e){}};
 const FLASH={};
 
@@ -841,11 +868,13 @@ const lit=r=>nodesOf(r).reduce((a,i)=>a+pages(i),0);
 const total=r=>nodesOf(r).length*2;
 const reson=id=>S.foot[id]&&S.pin[id]&&S.pin[id].s!=='skip';
 function voice(r){const a=lit(r),t=total(r),f=a/t;return !a?'路还没亮。点个地方，咱们开始吧。':f<.34?'有点样子了，继续。':f<.67?'路已经亮了一半左右，不错。':f<1?'快了，每处的历史和今天都看看。':'全亮了。说实话，我没想到你真能读完。'}
-function chosen(){const s=PLANSTART[S.plan];return Object.keys(S.picks||{}).filter(i=>S.picks[i]&&PICKS[i]&&s&&PICKS[i].stage>=s)}
+const pinOn=k=>S.pin[k]&&S.pin[k].s!=='skip';
+const planKeys=()=>{const fin=S.mux;return Object.keys(S.pin).filter(k=>pinOn(k)&&(ENDLOC[k]?(PLANSEG[S.plan]||[])[0]&&ENDLOC[k][PLANSEG[S.plan][0]]:LOC[k]&&segsFor(S.plan,fin).some(x=>LOC[k]===x.s+x.k)))};
+const rowsNow=()=>dayRows(S.plan,S.mux,S.pace,S.start,planKeys(),k=>S.pin[k].day||0);
 function calc(){
- const p=PLANS.find(x=>x.id===S.plan),km=p.km+(S.mux?118:0),walk=Math.ceil(km/S.pace),on=[...p.has,...(S.mux?FIN:[]),...Object.keys(NODES).filter(i=>NODES[i].side&&(NODES[i].plans.includes(S.plan)||(S.mux&&NODES[i].route==='fin'))),...(S.pin.rosa&&S.plan==='porto'?['rosa']:[])],rate=S.comfort?840:360;
+ const p=PLANS.find(x=>x.id===S.plan),km=p.km+(S.mux?118:0),walk=rowsNow().filter(r=>!r.rest).length,on=[...p.has,...(S.mux?FIN:[]),...Object.keys(NODES).filter(i=>NODES[i].side&&(NODES[i].plans.includes(S.plan)||(S.mux&&NODES[i].route==='fin'))),...(S.pin.rosa&&S.plan==='porto'?['rosa']:[])],rate=S.comfort?840:360;
  let extraY=0,extraD=0;on.forEach(i=>{const w=S.pin[i];if(w&&w.s!=='skip'){extraY+=w.yen||0;extraD+=w.day||0}});
- chosen().forEach(i=>{const k=PICKS[i],w=k.node&&S.pin[k.node];if(w&&w.s!=='skip')return;extraY+=pickYen(k);if(k.extra)extraD+=1});
+ planKeys().filter(k=>!NODES[k]).forEach(k=>{extraY+=S.pin[k].yen||0;extraD+=S.pin[k].day||0});
  if(!S.mux&&S.pin.mux&&S.pin.mux.s==='pay')extraY+=200;
  const transit=2+(S.mux?1:0),days=walk+extraD+transit,flight=6000,living=(walk+extraD)*rate,all=flight+living+extraY,res=Object.keys(NODES).filter(reson),hit=res.filter(i=>on.includes(i));
  return {p,km,walk,days,transit,extraD,extraY,flight,living,total:all,res,hit,on};
@@ -865,7 +894,7 @@ function setLens(l){S.lens=l;save();render()}
 $('#l-past').onclick=()=>setLens('past');$('#l-now').onclick=()=>setLens('now');
 [['here','t-here'],['routes','t-routes'],['taste','t-taste'],['folk','t-folk'],['safe','t-safe'],['talk','t-talk'],['plan','t-plan']].forEach(([t,i])=>$('#'+i).onclick=()=>{const m=$('#right');if(mobile()&&S.tab===t&&!m.classList.contains('min'))m.classList.add('min');else{m.classList.remove('min');S.tab=t;save();render()}});
 $('#reread').onclick=()=>{S.phase='cover';S.page=0;save();boot()};
-$('#reset').onclick=()=>{S=NEW();Object.keys(FLASH).forEach(k=>delete FLASH[k]);save();vb=HOME.slice();boot()};
+let rsT;$('#reset').onclick=e=>{const b=e.currentTarget;if(!b.dataset.arm){b.dataset.arm=1;b.dataset.t=b.textContent;b.textContent='再点一次清空';clearTimeout(rsT);rsT=setTimeout(()=>{b.textContent=b.dataset.t;delete b.dataset.arm},4000);return}clearTimeout(rsT);b.textContent=b.dataset.t;delete b.dataset.arm;S=NEW();Object.keys(FLASH).forEach(k=>delete FLASH[k]);save();vb=HOME.slice();boot()};
 
 /* ---------- the book talks ---------- */
 function showCover(){const b=$('#intro');b.classList.remove('gone');$('#chooser').hidden=true;
@@ -905,7 +934,7 @@ function render0(){
  const ch=pv?(CH[road]||CH.frances):{...CH.now,n:S.from==='other'?'今天的你':'从'+(FOLK.find(f=>f.id===S.from)||{n:'远方'}).n+'来的你'};
  $('#who').innerHTML=`<h2>${road||!pv?ch.n:'还没选路'}</h2>${pv&&ch.life?`<small>${ch.life}</small>`:''}<p>${road||!pv?ch.d:'选好路，我再给你介绍同伴。'}</p><div class="quals">${qs}</div>`;
  const pc=Object.values(S.pin).filter(p=>p.s!=='skip').length;
- $('#tallies').innerHTML=`<div><b>${Object.keys(S.foot).length}</b>足迹</div><div><b>${pc}</b>想去</div><div><b>${r.res.length}</b>必去</div>`;
+ $('#tallies').innerHTML=`<div><b>${Object.keys(S.foot).length}</b>足迹</div><div><b>${pc}</b>行程中</div><div><b>${r.res.length}</b>必去</div>`;
  Object.entries(NODES).forEach(([id,n])=>{const g=$('#n-'+id),vis=n.route===road||S.done.includes(n.route);g.classList.toggle('off',!vis);g.classList.toggle('sel',id===S.node);g.classList.toggle('seen',pages(id)>0);g.classList.toggle('res',!!reson(id));g.querySelector('.nm').textContent=pv?n.past:n.now;const br=$('#br-'+id);if(br)br.classList.toggle('off',!vis);$('#d-'+id).classList.toggle('off',!vis);g.setAttribute('aria-label',pv?n.past:n.now);
   const pin=S.pin[id];g.querySelector('.pl').textContent=(PL[id]||'')+(S.foot[id]?' ◆':'')+(pin&&pin.s!=='skip'?' ▲':'');
   ['#s-','#si-','#st-','#d-'].forEach(q=>{const e=$(q+id);if(e){e.classList.toggle('l1',pages(id)===1);e.classList.toggle('l2',pages(id)===2)}})});
@@ -927,7 +956,7 @@ function rHere(){
  if(st.hush)h+=`<div class="hush">${st.hush}</div>`;
  if(!pv&&SAFE.at[id])h+=`<button class="sn" id="sfn" type="button"><b>安全提示</b>${SAFE.at[id]}</button>`;
  if(done){const c=st.c[done.c];
-  h+=`<div class="out">${c.o}<span class="delta">${pv?'足迹已留下':c.s==='skip'?'这里不去了':'已加入想去'}</span></div>`;
+  h+=`<div class="out">${c.o}<span class="delta">${pv?'足迹已留下':c.s==='skip'?'这里不去了':'已加入行程'}</span></div>`;
   if(FLASH.note)h+=`<div class="out">${FLASH.note}</div>`;
   if(FLASH.res===id)h+=`<div class="hush"><b>必去</b>历史打动了你，今天也想去，这里就定下了。</div>`;
   const other=pv?S.pin[id]:S.foot[id],next=nodesOf(n.route).find(i=>pages(i)<2&&i!==id);if(n.side)h+=`<p class="help">这一页不算进度，但会算进行程。</p>`;
@@ -941,20 +970,24 @@ function rHere(){
   $('#redo').onclick=()=>{pv?delete S.foot[id]:delete S.pin[id];S.done=S.done.filter(x=>x!==n.route);save();render()}}
 }
 function rRoutes(){const sh=$('#sheet');sh.innerHTML=`<h2 class="h">路线</h2><p class="voice">读得越多，这里画得越满。</p>${bandsHTML(false)}`;wireBands(sh)}
-function picksHTML(){const ids=Object.keys(PICKS),act=(i,p)=>{const a=p.act;return a.t==='book'?`<a class="go" href="${a.url}" target="_blank" rel="noopener">${a.l}</a>`:a.t==='call'?`<a class="go" href="tel:${a.tel}">${a.l}</a>`:`<span class="pkw">${a.l}</span>`};
- return `<h3 class="sb">精选</h3><p class="help">我从官方页面、米其林和当地资料里挑了 ${ids.length} 个，${CHECKED}。分数不是标准，别处没有才算数。</p><div class="pks">${ids.map(i=>{const p=PICKS[i],a=p.act,on=S.picks&&S.picks[i];return `<article class="pk"><p class="meta">${p.town} · 第 ${p.stage} 段</p><h3>${p.n}</h3><p>${p.why}</p><p class="pkn">${p.note}${a.p?` ${a.p}`:''}</p>${a.say?`<p class="say1" lang="es">${SAY_ES}</p>`:''}<p class="pkc">${p.eur==null?'价格未查到':p.eur===0?'免费':`${p.est?'约 ':''}€${p.eur}，约 ${yuan(pickYen(p))}`}${p.extra?' · 多留一天':''}</p><div class="row">${act(i,p)}<button class="mini" type="button" data-pk="${i}" aria-pressed="${!!on}">${on?'已加入行程':'加入行程'}</button></div><p class="pks1">${p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ')}</p></article>`}).join('')}</div>`}
-function wirePicks(){document.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{const i=b.dataset.pk;S.picks=S.picks||{};if(S.picks[i])delete S.picks[i];else S.picks[i]=1;save();render()})}
-function daysHTML(){const rows=dayRows(S.plan,S.start,chosen());if(!rows)return `<h3 class="sb">按天安排</h3><p class="help">这条路的按天行程还在做，目前先有法国之路。</p>`;
- const f=d=>`${d.getMonth()+1}/${d.getDate()} 周${'日一二三四五六'[d.getDay()]}`,walk=rows.filter(r=>!r.rest).length;
- return `<h3 class="sb">按天安排</h3><div class="fld"><label for="f-s">出发</label><input id="f-s" type="date" value="${S.start||''}"></div><p class="help">按常见的 ${walk} 段走，定了出发日才能检查闭店。上面的估算按你的“每天走”计算，天数可能略有差别。</p><div class="dayl">${rows.map(r=>{const is=dayIssues(r);return `<div class="day${is.some(x=>x.hard)?' bad':''}"><p class="dn">第 ${r.n} 天${r.date?` · ${f(r.date)}`:''}</p><div><h3>${r.rest?`留在${r.to}`:`${r.from} → ${r.to}`}${r.km?` <small>${r.km} km</small>`:''}</h3>${r.ps.map(i=>`<p class="dp">${PICKS[i].n}${PICKS[i].act.t!=='walk'?' <em>要预约</em>':''}</p>`).join('')}${is.map(x=>`<p class="dw">${x.t}</p>`).join('')}</div></div>`}).join('')}</div>`}
+function pickDay(i,rows){const k=pickKey(i),l=ENDLOC[k]?null:LOC[k];const hit=rows.find(r=>r.segs&&r.segs.some(x=>ENDLOC[k]?ENDLOC[k][x.s]===x.k:l===x.s+x.k));return hit?hit.n:0}
+function picksHTML(r){const ids=Object.keys(PICKS).filter(i=>pickRoad(PICKS[i],r));if(!ids.length)return '';const rows=dayRows(S.plan,S.mux,S.pace,'',[],()=>0);ids.sort((x,y)=>(pickDay(x,rows)||999)-(pickDay(y,rows)||999));const act=p=>{const a=p.act;return a.t==='book'?`<a class="go" href="${a.url}" target="_blank" rel="noopener">${a.l}</a>`:a.t==='call'?`<a class="go" href="tel:${a.tel}">${a.l}</a>`:`<span class="pkw">${a.l}</span>`};
+ return `<h3 class="sb">精选</h3><p class="help">我从官方页面、米其林和当地资料里挑了 ${ids.length} 个，${CHECKED}。分数不是标准，别处没有才算数。</p><div class="pks">${ids.map(i=>{const p=PICKS[i],a=p.act,k=pickKey(i),on=pinOn(k),n=pickDay(i,rows),fix=n?'':(r==='fin'?'mux':r==='portugues'?'porto':'full');return `<article class="pk"><p class="meta">${p.town}${n?` · 第 ${n} 天`:' · 不在当前路线上'}</p><h3>${p.n}</h3><p>${p.why}</p><p class="pkn">${p.note}${a.p?` ${a.p}`:''}</p>${a.say?`<p class="say1" lang="es">${SAY_ES}</p>`:''}<p class="pkc">${p.eur==null?'价格未查到':p.eur===0?'免费':`${p.est?'约 ':''}€${p.eur}，约 ${yuan(pickYen(p))}`}${p.extra?' · 多留一天':''}</p><div class="row">${act(p)}${n?`<button class="mini" type="button" data-pk="${i}" aria-pressed="${!!on}">${on?'已加入行程':'加入行程'}</button>`:`<button class="mini" type="button" data-pkf="${i}" data-f="${fix}">${fix==='mux'?'加上世界尽头并加入':fix==='porto'?'改走葡萄牙之路并加入':'改走全程并加入'}</button>`}${p.node?`<button class="mini" type="button" data-pkn="${p.node}">看详情</button>`:''}</div>${p.src?`<p class="pks1">${p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ')}</p>`:''}</article>`}).join('')}</div>`}
+function pickAdd(i){const p=PICKS[i],k=pickKey(i),n=NODES[k];if(pinOn(k)){delete S.pin[k];return}if(n){const c=n.N.c[0];S.pin[k]={s:c.s,yen:c.yen||0,day:c.day||0,c:0}}else S.pin[k]={s:'must',yen:pickYen(p),day:p.extra?1:0,c:0}}
+function wirePicks(){document.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{pickAdd(b.dataset.pk);save();render()});
+ document.querySelectorAll('[data-pkf]').forEach(b=>b.onclick=()=>{if(b.dataset.f==='mux')S.mux=true;else S.plan=b.dataset.f;if(!pinOn(pickKey(b.dataset.pkf)))pickAdd(b.dataset.pkf);save();render()});
+ document.querySelectorAll('[data-pkn]').forEach(b=>b.onclick=()=>{S.lens='now';S.tab='here';pick(b.dataset.pkn)})}
+function daysHTML(){const rows=rowsNow();const f=d=>`${d.getMonth()+1}/${d.getDate()} 周${'日一二三四五六'[d.getDay()]}`,keys=planKeys(),off=Object.keys(S.pin).filter(k=>pinOn(k)&&!keys.includes(k)),today=new Date();today.setHours(0,0,0,0);
+ const past=S.start&&new Date(S.start+'T12:00:00')<today;
+ return `<h3 class="sb">按天安排</h3><div class="fld"><label for="f-s">出发</label><input id="f-s" type="date" value="${S.start||''}"></div>${past?'<p class="dw">这个出发日已经过了。</p>':''}<p class="help">${S.start?'日期已经排好。标红的是当天做不了的事。':'选好出发日，就能检查闭店和季节。'}只算走路和多留的日子，往返路上另算。</p>${off.length?`<p class="dw">有 ${off.length} 项不在当前路线上：${off.map(nameOf).join('、')}。</p>`:''}<div class="dayl">${rows.map(r=>{const is=dayIssues(r);return `<div class="day${is.some(x=>x.hard)?' bad':''}"><p class="dn">第 ${r.n} 天${r.date?` · ${f(r.date)}`:''}</p><div><h3>${r.rest?`留在${r.to}`:`${r.from} → ${r.to}`}${r.km?` <small>${r.km} km</small>`:''}</h3>${r.noTown?'<p class="pkn">这段太长，住处要在途中再定。</p>':''}${r.ps.map(k=>{const i=pickOfKey(k);return `<p class="dp">${nameOf(k)}${i&&PICKS[i].act.t!=='walk'?' <em>要预约</em>':''}</p>`}).join('')}${is.map(x=>`<p class="dw">${x.t}</p>`).join('')}</div></div>`}).join('')}</div>`}
 function rTaste(){const r=S.road,items=sidesOf(r),pv=S.lens==='past',row=i=>{const n=NODES[i],done=[S.foot[i]?'◆':'',S.pin[i]&&S.pin[i].s!=='skip'?'▲':''].join('');return `<button type="button" class="tr" data-t="${i}"><svg class="tl" viewBox="-11 -11 22 22" aria-label="${{food:'吃的',do:'玩的',nature:'风景'}[n.side]}"><path d="${ICON[n.side]}"/></svg><span><b>${pv?n.past:n.now}</b><small>${(pv?n.P:n.N).t}</small></span><em>${done}</em></button>`};
  $('#sheet').innerHTML=`<h2 class="h">吃喝玩</h2>${gline(pv?`${CH[r].y} 年的${CH[r].s}这一路会遇到什么？`:'今天去哪儿吃，什么时候去，要花多少钱。')}
- ${pv?`<div class="stat">${EATFACT}</div>`:''}${!pv&&r==='frances'?picksHTML():''}
+ ${pv?`<div class="stat">${EATFACT}</div>`:''}${!pv?picksHTML(r):''}
  <h3 class="sb">吃的</h3><div class="trs">${items.filter(i=>NODES[i].side==='food').map(row).join('')||'<p class="help">这条路吃的我还在查。</p>'}</div>
  <h3 class="sb">玩的</h3><div class="trs">${items.filter(i=>NODES[i].side==='do').map(row).join('')}</div>
  <h3 class="sb">风景</h3><div class="trs">${items.filter(i=>NODES[i].side==='nature').map(row).join('')}</div>
  <p class="help">切换年代，同一项会变成另一页。写着“估计”的价格是我估的。</p>`;
- if(!pv&&r==='frances')wirePicks();
+ if(!pv)wirePicks();
  document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>pick(b.dataset.t))}
 function rSafe(){const r=S.road,x=ROUTES.find(y=>y.id===r),C=SAFE.call,tel=(n,l)=>`<a class="dial" href="tel:${n.replace(/-/g,'')}"><b>${n}</b><span>${l}</span></a>`,
  places=r==='portugues'?['pt','es']:['es'],sh=$('#sheet');
@@ -1002,7 +1035,7 @@ function rPlan(r){
  const ok=r.total<=S.budget&&r.days<=S.days;
  const v=ok?`这样走没问题，还剩 ${yuan(S.budget-r.total)} 和 ${S.days-r.days} 天。`:`这样走不下来：${r.days>S.days?`假期差 ${r.days-S.days} 天`:''}${r.days>S.days&&r.total>S.budget?'，':''}${r.total>S.budget?`预算差 ${yuan(r.total-S.budget)}`:''}。`;
  const tip=r.res.length?(r.hit.length<r.res.length?`你的 ${r.res.length} 个必去的地方，这条路只经过 ${r.hit.length} 个。`:'你必去的地方都在这条路上。'):'还没有必去的地方。同一处的历史和今天都读过并选过，就会定下来。';
- const names=Object.entries(NODES).filter(([i])=>(S.pin[i]&&S.pin[i].s!=='skip')||S.foot[i]).map(([i,n])=>`<span class="${r.on.includes(i)?'y':''}">${n.now}${reson(i)?' ◆▲':''}</span>`).join('')||'<span>还没有标记</span>';
+ const names=Object.entries(NODES).filter(([i])=>pinOn(i)||S.foot[i]).map(([i,n])=>`<span class="${r.on.includes(i)?'y':''}">${n.now}${reson(i)?' ◆▲':''}</span>`).join('')||'<span>还没有标记</span>';
  $('#sheet').innerHTML=`<h2 class="h">我的行程</h2>
  <div class="fld"><label for="f-d">假期</label><input id="f-d" type="range" min="7" max="60" value="${S.days}"><output id="o-d">${S.days} 天</output></div>
  <div class="fld"><label for="f-b">预算</label><input id="f-b" type="range" min="10000" max="80000" step="1000" value="${S.budget}"><output id="o-b">${yuan(S.budget)}</output></div>
