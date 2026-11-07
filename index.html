@@ -196,6 +196,7 @@ h1,h2,h3,p,figure{margin:0}
 .cover span{position:absolute;color:#1E1712;mix-blend-mode:multiply;white-space:nowrap;pointer-events:none}
 .ct{left:44.4%;top:10.6%;transform:translateX(-50%) rotate(-.5deg);font-family:var(--f-gothic);font-size:9.9cqw;line-height:1;filter:url(#press);opacity:.93}
 .cs{left:44.4%;top:83.6%;transform:translateX(-50%);font-size:2.75cqw;letter-spacing:.16em;font-weight:700;opacity:.82}
+.cd{left:44.4%;top:88.2%;transform:translateX(-50%);font-size:2.25cqw;line-height:1.55;text-align:center;letter-spacing:.06em;opacity:.78}
 .cw{right:9%;bottom:4.6%;font-size:2.7cqw;letter-spacing:.2em;color:#8F1F18!important;font-weight:700;opacity:.9}
 .spread{width:min(1020px,100%);height:min(640px,88vh);display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1fr);background:#EADBB7 url(assets/paper_old.jpg);color:var(--ink);box-shadow:18px 24px 44px rgba(10,6,3,.55);animation:leaf .3s ease-out}
 @keyframes leaf{from{opacity:0}to{opacity:1}}
@@ -204,6 +205,7 @@ h1,h2,h3,p,figure{margin:0}
 .pgl figcaption{font-size:12.5px;text-align:center;color:var(--mute)}
 .pgr{padding:30px 34px 18px;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:12px;min-width:0;overflow-y:auto}
 .say{display:grid;gap:10px;align-content:start;font-size:20px;line-height:1.65}
+.say{min-height:0;overflow-y:auto}
 .say p{animation:ink .4s both}
 .say p.back{color:var(--red)}
 @keyframes ink{from{opacity:0}to{opacity:1}}
@@ -225,9 +227,9 @@ h1,h2,h3,p,figure{margin:0}
   .right.min{height:auto}.right.min .sheet{display:none}
   .tabs button{font-size:12.5px}
   .st h2{font-size:20px}.cameo{width:70px;height:86px}
-  .spread{grid-template-columns:minmax(0,1fr);grid-template-rows:170px minmax(0,1fr);height:min(680px,90vh)}
+  .spread{grid-template-columns:minmax(0,1fr);grid-template-rows:120px minmax(0,1fr);height:min(680px,90vh)}
   .pgl{border-right:0;border-bottom:1px solid rgba(42,33,24,.5);padding:10px}.pgl figcaption{display:none}
-  .pgr{padding:16px 18px 10px}.say{font-size:18px}
+  .pgr{padding:16px 18px 10px}.say{font-size:17px;line-height:1.6;gap:8px}
   .chooser{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
   .plates{grid-template-columns:minmax(0,1fr);gap:12px}
   .pc{grid-template-columns:110px minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:10px}.pi{grid-row:1/5;height:auto;min-height:100px}
@@ -468,8 +470,9 @@ const PLANS=[
 ];
 const FIN=['pma','fis','mux'];
 const INTRO=[
+ {art:'etz.jpg',cap:'约 1500 年的朝圣路线图，那时的人就靠它认路',say:['先说说，这是一条什么路。','朝圣之路，是从欧洲各地走向西班牙圣地亚哥的一组步行路线。传说耶稣的门徒圣雅各，就葬在那里的大教堂下面。','一千多年前，人们为信仰而走。现在什么理由都有：信仰、徒步，或者只是想一个人静一静。2025 年，有 53 万人走到终点领了证书。','大多数人每天走二十公里左右，住朝圣者旅舍，跟着黄箭头和扇贝标志认路。','这本书带你读懂它的来历，再排出你自己的行程。'],next:'接着翻'},
  {art:'woodcut.jpg',cap:'1495 年朝圣指南的扉页木刻',say:['哟，有人翻开我了。','好久没人这么干了。上一个是在阿斯托加的旧书摊，人家只是想看看我这儿有没有 Wi-Fi 密码。'],next:'你是谁？'},
- {art:'etz.jpg',cap:'埃茨劳布《罗马之路》，约 1500 年',say:['我叫 Buen Camino。','朝圣路上，大家见面都这么打招呼，意思是“一路顺风”。说的人多了，这句话就成了精，也就是我。','我从九世纪起就跟着这条路，读过拉丁文账本、木刻路书，也见过人刷黄油漆。现在我泡论坛，还看统计表。','封面这位是圣雅各，我只是借住在他的书里。','我是幽灵，但我查资料。'],next:'你想干什么？'},
+ {art:'ship2.png',cap:'加利西亚海图上的船，约 1588 年',say:['我叫 Buen Camino。','朝圣路上，大家见面都这么打招呼，意思是“一路顺风”。说的人多了，这句话就成了精，也就是我。','我从九世纪起就跟着这条路，读过拉丁文账本、木刻路书，也见过人刷黄油漆。现在我泡论坛，还看统计表。','刚才那位拿着手杖和扇贝的，就是圣雅各。我只是借住在他的书里。','我是幽灵，但我查资料。'],next:'你想干什么？'},
  {art:'platenur.jpg',cap:'“用点标出一城到一城的路”',say:['先认识一下。这条路上来过一百九十多个国家和地区的人。'],q:'from',ask:'你从哪儿来？',ans:[['中国','cn','你好！从上海到世界尽头，一万多公里。中国朝圣者的准确人数我还没查到，正好，咱们一起去找。'],['韩国','kr','안녕하세요！2004 年你们才来了 18 个人，到 2019 年就有 8224 人。我还以为自己数错了。'],['日本','jp','こんにちは！你们有熊野古道。两条路都走完的人，已经有一万个了。'],['美国','us','Hello！2025 年你们来了 44238 人，外国人里最多。'],['德国','de','Hallo！1495 年你们的昆尼希就写了路书，攻略这件事你们起步很早。'],['意大利','it','Ciao！拉菲是你们的人，他比我还爱唠叨。'],['别的地方','other','好，我就喜欢这样的新朋友。']]},
  {art:'platebohemia.jpg',cap:'波希米亚山地，埃茨劳布地图局部',say:[],q:'why',ask:'为什么想来走这条路？这个问题我问了一千多年，答案从来没重样过。',ans:[['想搞懂一段历史','history','好，那咱们从死人说起，我认识不少。'],['想离开一阵子','leave','都这么说。有些人后来真的没回去。'],['想走到能看见海的地方','sea','那你得比大多数人走得都远。我喜欢。'],['我也不知道','none','没关系，走着走着就知道了。很多人都这样。']]},
  {art:'compass.png',cap:'随图附的罗盘',say:[],q:'days',ask:'能出来多久？',ans:[['两周，一次年假',14,'两周啊，那咱们得挑着走。'],['一个月',30,'一个月够走完一条路了。'],['更久',45,'你比我认识的大多数活人都自由。']]},
@@ -998,7 +1001,7 @@ let rsT;$('#reset').onclick=e=>{const b=e.currentTarget;if(!b.dataset.arm){b.dat
 
 /* ---------- the book talks ---------- */
 function showCover(){const b=$('#intro');b.classList.remove('gone');$('#chooser').hidden=true;
- b.innerHTML=`<button class="cover" id="opn" type="button" aria-label="翻开这本书"><img src="${A('cover.jpg')}" alt="1495 年朝圣指南的扉页木刻，题名处印着 Buen Camino"><span class="ct">Buen Camino</span><span class="cs">自九世纪起，一直在路上</span><span class="cw">翻开</span></button>`;
+ b.innerHTML=`<button class="cover" id="opn" type="button" aria-label="翻开这本书"><img src="${A('cover.jpg')}" alt="1495 年朝圣指南的扉页木刻，题名处印着 Buen Camino"><span class="ct">Buen Camino</span><span class="cs">自九世纪起，一直在路上</span><span class="cd">一条走向西班牙圣地亚哥的千年步行路<br>读懂它的来历，再排出你自己的行程</span><span class="cw">翻开</span></button>`;
  $('#skip').hidden=false;$('#opn').onclick=()=>{const c=$('#opn');c.classList.add('opening');setTimeout(()=>{S.page=0;if(S.road&&Object.keys(S.foot).length+Object.keys(S.pin).length>0)showBack();else{S.phase='intro';save();showPage()}},matchMedia('(prefers-reduced-motion:reduce)').matches?0:560)};}
 function showBack(){const b=$('#intro'),x=ROUTES.find(y=>y.id===S.road),c=CH[S.road];b.innerHTML=`<div class="spread"><figure class="pgl"><img src="${A('woodcut.jpg')}" alt=""><figcaption>1495 年朝圣指南的扉页木刻</figcaption></figure><div class="pgr"><div class="say"><p>又见面了。</p><p>上次我们走到${x.n}，跟着 ${c.y} 年的${c.s}，你已经读了 ${lit(S.road)}/${total(S.road)} 页。</p><p>接着走，还是让我从头再说一遍？</p></div><div class="ans"><button type="button" id="bk1">接着走</button><button type="button" id="bk2">从头听一遍</button></div></div></div>`;$('#bk1').onclick=resume;$('#bk2').onclick=()=>{S.page=0;S.phase='intro';save();showPage()}}
 function resume(){$('#intro').classList.add('gone');$('#skip').hidden=true;if(S.road){S.phase='play';if(!S.node)S.node=nodesOf(S.road)[0];S.tab='here';save();render();flyRoad(S.road)}else{S.phase='choose';S.tab='routes';save();showChooser();render()}}
