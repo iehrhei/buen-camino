@@ -346,8 +346,8 @@ body:has(.intro:not(.gone)) :is(.left,.right,.frame){visibility:hidden}
 .pk.flash{animation:pkf 1.8s ease-out}
 @keyframes pkf{0%,35%{background:rgba(143,31,24,.14)}100%{background:transparent}}
 
-.ep{display:grid;grid-template-rows:1fr;place-items:center;overflow:hidden;padding:24px;background:#E6D8B4 url(assets/page.jpg) no-repeat left top/200% 100%;box-shadow:inset -22px 0 26px -18px rgba(80,58,24,.42),inset 0 0 0 9999px rgba(120,96,52,.08)}
-.plate{margin:0;width:min(56%,280px);transform:rotate(-1.4deg);box-shadow:1px 1px 0 rgba(90,70,40,.25),3px 5px 10px rgba(70,50,20,.28)}
+.ep{display:grid;grid-template-rows:1fr;place-items:end center;overflow:hidden;padding:24px;background:#E6D8B4 url(assets/page.jpg) no-repeat left top/200% 100%;box-shadow:inset -22px 0 26px -18px rgba(80,58,24,.42),inset 0 0 0 9999px rgba(120,96,52,.08)}
+.plate{margin:0 0 12% 0;width:min(19%,92px);transform:rotate(-1.2deg);box-shadow:1px 1px 0 rgba(90,70,40,.25),3px 5px 10px rgba(70,50,20,.28)}
 .plate img{display:block;width:100%;height:auto;filter:none;mix-blend-mode:normal}
 .tp{grid-template-rows:minmax(0,1fr) auto}
 .tpb{display:grid;place-content:center;justify-items:center;text-align:center;gap:6px}
@@ -356,8 +356,8 @@ body:has(.intro:not(.gone)) :is(.left,.right,.frame){visibility:hidden}
 .tpr{display:block;width:70px;height:1px;background:#C0302E;margin:22px 0}
 .tp3{font-size:15px;letter-spacing:.12em;margin:0;color:#2a2118}
 .tp4{font-size:19px;letter-spacing:.16em;margin:0;color:#C0302E;font-weight:700}
-.tp5{text-align:center;font-size:12px;letter-spacing:.24em;color:#6b5a44;margin:6px 0 0}
-@media (max-width:860px){.spread.ex{grid-template-rows:minmax(0,1.1fr) minmax(0,1fr)}.ep{padding:12px;background-size:100% 200%}.plate{width:auto}.plate img{max-height:min(38vh,300px);width:auto;max-width:100%}.tp1{font-size:26px}}
+.tp5{text-align:center;font-size:11px;letter-spacing:.14em;color:#8a7a62;margin:6px 0 0}
+@media (max-width:860px){.spread.ex{grid-template-rows:minmax(0,.8fr) minmax(0,1fr)}.ep{padding:12px;background-size:100% 200%}.plate{width:64px;margin-bottom:6%}.tp1{font-size:26px}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition:none!important}}
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -1032,7 +1032,7 @@ function showBack(){const b=$('#intro'),x=ROUTES.find(y=>y.id===S.road),c=CH[S.r
 function resume(){$('#intro').classList.add('gone');$('#skip').hidden=true;if(S.road){S.phase='play';if(!S.node)S.node=nodesOf(S.road)[0];S.tab='here';save();render();flyRoad(S.road)}else{S.phase='choose';S.tab='routes';save();showChooser();render()}}
 function showPage(){const pg=INTRO[S.page],b=$('#intro'),say=[...pg.say,...(pg.ask?[pg.ask]:[])];
  const btn=pg.q?`<div class="ans">${pg.ans.map((a,i)=>`<button type="button" data-a="${i}">${a[0]}</button>`).join('')}</div>`:`<div class="ans"><button type="button" id="nx">${pg.next}</button></div>`;
- const pn=S.page*2;if(pg.ex){b.innerHTML=`<div class="spread ex"><div class="pgl ep"><figure class="plate"><img src="${A('bookplate.webp')}" alt="Rhei Tan 的藏书票：铃兰木刻"></figure></div><div class="pgr tp"><div class="tpb"><p class="tp1">BUEN CAMINO</p><p class="tp2">一本走了一千多年的路书</p><span class="tpr"></span><p class="tp3">Buen Camino 口述</p><p class="tp4">Rhei Tan 记</p></div><div>${btn}<p class="tp5">上海 · 二〇二六</p></div></div></div>`;}else b.innerHTML=`<div class="spread"><figure class="pgl"><p class="rh">${pn} / 序章</p><img src="${A(pg.art)}" alt=""><figcaption>${pg.cap}</figcaption></figure><div class="pgr"><p class="rh r">BUEN CAMINO / ${pn+1}</p><div class="say" id="say"><h2 class="ph"><svg class="mg" viewBox="-12 -12 24 24" aria-hidden="true"><path d="M0 9L-9-1Q-9.5-6-6-8.5Q-3-10.5 0-10Q3-10.5 6-8.5Q9.5-6 9-1Z"/><path d="M0 9L-6-7M0 9L-3-9.5M0 9L0-10M0 9L3-9.5M0 9L6-7" fill="none" stroke="#F1E6C6" stroke-width=".9"/></svg>${pg.h}</h2>${say.map((l,i)=>`<p style="animation-delay:${i*.25}s">${l}</p>`).join('')}</div><div>${btn}<p class="pgno">${S.page+1} / ${INTRO.length}</p></div></div></div>`;
+ const pn=S.page*2;if(pg.ex){b.innerHTML=`<div class="spread ex"><div class="pgl ep"><figure class="plate"><img src="${A('bookplate.webp')}" alt="Rhei Tan 的藏书票：铃兰木刻"></figure></div><div class="pgr tp"><div class="tpb"><p class="tp1">BUEN CAMINO</p><p class="tp2">一本走了一千多年的路书</p></div><div>${btn}<p class="tp5">Buen Camino 口述 · Rhei Tan 记 · 二〇二六</p></div></div></div>`;}else b.innerHTML=`<div class="spread"><figure class="pgl"><p class="rh">${pn} / 序章</p><img src="${A(pg.art)}" alt=""><figcaption>${pg.cap}</figcaption></figure><div class="pgr"><p class="rh r">BUEN CAMINO / ${pn+1}</p><div class="say" id="say"><h2 class="ph"><svg class="mg" viewBox="-12 -12 24 24" aria-hidden="true"><path d="M0 9L-9-1Q-9.5-6-6-8.5Q-3-10.5 0-10Q3-10.5 6-8.5Q9.5-6 9-1Z"/><path d="M0 9L-6-7M0 9L-3-9.5M0 9L0-10M0 9L3-9.5M0 9L6-7" fill="none" stroke="#F1E6C6" stroke-width=".9"/></svg>${pg.h}</h2>${say.map((l,i)=>`<p style="animation-delay:${i*.25}s">${l}</p>`).join('')}</div><div>${btn}<p class="pgno">${S.page+1} / ${INTRO.length}</p></div></div></div>`;
  const adv=()=>{if(S.page<INTRO.length-1){S.page++;save();showPage()}else toMap()};
  if(!pg.q)$('#nx').onclick=adv;else b.querySelectorAll('[data-a]').forEach(x=>x.onclick=()=>{const a=pg.ans[+x.dataset.a];
   if(pg.q==='from')S.from=a[1];if(pg.q==='why')S.why=a[1];if(pg.q==='days')S.days=a[1];if(pg.q==='bed'){S.comfort=a[1]===2?1:0;S.budget=[25000,35000,50000][a[1]]}
