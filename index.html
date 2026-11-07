@@ -189,15 +189,21 @@ h1,h2,h3,p,figure{margin:0}
 .intro{position:fixed;inset:0;display:grid;place-items:center;padding-block:calc(16px + env(safe-area-inset-top,0px)) calc(16px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:radial-gradient(ellipse at 50% 45%,rgba(34,24,15,.34),rgba(24,16,10,.8) 78%);z-index:5}
 .intro.gone{display:none}
 .skip{position:fixed;right:max(18px,env(safe-area-inset-right,0px));top:calc(12px + env(safe-area-inset-top,0px));background:none;border:0;color:#E9DCBC;font-size:13px;z-index:6}
-.cover{position:relative;height:min(86vh,720px);max-width:84vw;aspect-ratio:757/1064;border:0;padding:0;background:none;container-type:inline-size;transform:rotate(-.7deg);transform-origin:left center;box-shadow:1px 1px 0 #d8cfba,2px 2px 0 #a99e87,3px 3px 0 #d8cfba,4px 4px 0 #a99e87,5px 5px 0 #cfc5ae,22px 26px 44px rgba(10,6,3,.55);transition:transform .25s ease}
+.cover{position:relative;height:min(86vh,720px);max-width:84vw;aspect-ratio:680/1000;border:0;padding:0;background:none;container-type:inline-size;transform:rotate(-.7deg);transform-origin:left center;box-shadow:1px 1px 0 #d8cfba,2px 2px 0 #a99e87,3px 3px 0 #d8cfba,4px 4px 0 #a99e87,5px 5px 0 #cfc5ae,22px 26px 44px rgba(10,6,3,.55);transition:transform .25s ease}
 .cover:hover{transform:rotate(-.7deg) translateY(-3px)}
 .cover.opening{transform:perspective(1800px) rotateY(-112deg);transition:transform .56s cubic-bezier(.55,.05,.55,.95)}
-.cover img{width:100%;height:100%;object-fit:cover;display:block}
-.cover span{position:absolute;color:#1E1712;mix-blend-mode:multiply;white-space:nowrap;pointer-events:none}
-.ct{left:44.4%;top:10.6%;transform:translateX(-50%) rotate(-.5deg);font-family:var(--f-gothic);font-size:9.9cqw;line-height:1;filter:url(#press);opacity:.93}
-.cs{left:44.4%;top:83.6%;transform:translateX(-50%);font-size:2.75cqw;letter-spacing:.16em;font-weight:700;opacity:.82}
-.cd{left:44.4%;top:88.2%;transform:translateX(-50%);font-size:2.25cqw;line-height:1.55;text-align:center;letter-spacing:.06em;opacity:.78}
-.cw{right:9%;bottom:4.6%;font-size:2.7cqw;letter-spacing:.2em;color:#8F1F18!important;font-weight:700;opacity:.9}
+.cover .cv{width:100%;height:100%;display:block;border-radius:2px 7px 7px 2px}
+.cv .gold{fill:url(#gd);stroke:none}
+.cv .rl{fill:none;stroke:url(#gd);stroke-width:2.4}
+.cv .cr{fill:none;stroke:#7a5a20;stroke-width:1.6;stroke-linecap:round;opacity:.75}
+.cv .ck{fill:none;stroke:url(#gd);stroke-width:2.2}
+.cv text{font-family:var(--f-body);font-weight:700}
+.cv .cs1{font-size:25px;letter-spacing:.22em}
+.cv .cs2{font-size:17px;letter-spacing:.1em;font-weight:400}
+.cv .cs3{font-size:21px;letter-spacing:.5em}
+.cv .tl text{font-family:var(--f-gothic);font-size:62px;fill:#173826;font-weight:400;paint-order:stroke;stroke:rgba(250,236,180,.45);stroke-width:1.2px}
+.strap{position:absolute;top:-1.2%;bottom:-1.2%;right:8.2%;width:3.1%;background:linear-gradient(90deg,#0b0b0b,#262626 45%,#111);box-shadow:-2px 0 3px rgba(0,0,0,.45),2px 0 3px rgba(0,0,0,.35);border-radius:2px}
+.ribbon{position:absolute;bottom:-6.5%;left:22%;width:4%;height:8%;background:linear-gradient(90deg,#6e1712,#9c2a20 50%,#6e1712);clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%);z-index:-1}
 .spread{width:min(1020px,100%);height:min(640px,88vh);display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1fr);background:#EADBB7 url(assets/paper_old.jpg);color:var(--ink);box-shadow:18px 24px 44px rgba(10,6,3,.55);animation:leaf .3s ease-out}
 @keyframes leaf{from{opacity:0}to{opacity:1}}
 .pgl{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:6px;padding:22px 20px 10px;border-right:1px solid rgba(42,33,24,.5);min-width:0;min-height:0}
@@ -695,6 +701,48 @@ const FIRST={
  ]
 };
 
+/* Cloth-bound journal cover, drawn in SVG: green grained cloth, gilt shell border, a gilt scallop as the emblem. */
+function shellPath(cx,cy,R,n,spread,dir){const a0=Math.PI/2*dir,pts=[],ribs=[],k=i=>a0+(-spread/2+spread*i/n);
+ const P=(a,r)=>{const f=r>R*.5?.74+.26*Math.cos((a-a0)*1.05):1;return [cx+Math.cos(a)*r*f,cy+Math.sin(a)*r*f]};
+ let d='';for(let i=0;i<=n;i++){const a=k(i),[x,y]=P(a,R);if(i===0){const [hx,hy]=P(a,R*.16);d+=`M${hx.toFixed(1)} ${hy.toFixed(1)}L${x.toFixed(1)} ${y.toFixed(1)}`}else{const m=(k(i-1)+a)/2,[qx,qy]=P(m,R*1.075);d+=`Q${qx.toFixed(1)} ${qy.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)}`}
+  if(i>0&&i<n){const [ax,ay]=P(a,R*.2),[bx,by]=P(a,R*.985);ribs.push(`M${ax.toFixed(1)} ${ay.toFixed(1)}L${bx.toFixed(1)} ${by.toFixed(1)}`)}}
+ const [ex,ey]=P(k(n),R*.16);d+=`L${ex.toFixed(1)} ${ey.toFixed(1)}Z`;
+ const w=R*.3,h=R*.12,s=dir;const ear=`M${cx-w} ${cy-h*s}L${cx+w} ${cy-h*s}L${cx+R*.13} ${cy+h*.55*s}L${cx-R*.13} ${cy+h*.55*s}Z`;
+ const earRibs=[-.32,-.16,.16,.32].map(f=>`M${cx+w*f*1.9} ${cy-h*s}L${cx+R*.13*f*2.6} ${cy+h*.55*s}`).join('');
+ return {d,ribs:ribs.join(''),ear,earRibs}}
+function coverSVG(){const W=680,H=1000,o=24,band=54,inner=o+band;
+ const small=(x,y,rot)=>{const s=shellPath(0,0,15,9,2.3,1);return `<g transform="translate(${x} ${y}) rotate(${rot}) translate(0 -7)"><path d="${s.d}"/><path class="cr" d="${s.ribs}"/></g>`};
+ const knot=(x,y)=>`<g transform="translate(${x} ${y})"><path d="M0-4.6L4.6 0L0 4.6L-4.6 0Z"/><circle cx="-10" r="1.7"/><circle cx="10" r="1.7"/><circle cy="-10" r="1.7"/><circle cy="10" r="1.7"/></g>`;
+ const c=o+band/2;let edge='';const step=52;
+ const nx=Math.round((W-2*c)/step),sx=(W-2*c)/nx,ny=Math.round((H-2*c)/step),sy=(H-2*c)/ny;
+ for(let i=0;i<=nx;i++){const x=c+i*sx;edge+=(i%2?knot(x,c)+knot(x,H-c):small(x,c,180)+small(x,H-c,0))}
+ for(let i=1;i<ny;i++){const y=c+i*sy;edge+=(i%2?knot(c,y)+knot(W-c,y):small(c,y,90)+small(W-c,y,-90))}
+ const S=shellPath(340,292,218,23,3.0,1);
+ return `<svg class="cv" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs>
+ <linearGradient id="gd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3DE9A"/><stop offset=".35" stop-color="#C99B45"/><stop offset=".6" stop-color="#E7C977"/><stop offset="1" stop-color="#8C6524"/></linearGradient>
+ <radialGradient id="vg" cx=".5" cy=".45" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></radialGradient>
+ <filter id="cloth" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+ <filter id="wear" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="11"/><feColorMatrix values="0 0 0 0 .55  0 0 0 0 .62  0 0 0 0 .5  0 0 0 -1.6 .9"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+ <filter id="gilt" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/><feColorMatrix in="n" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -9 7.6" result="h"/><feComposite in="SourceGraphic" in2="h" operator="in" result="g"/><feOffset in="SourceAlpha" dx="0" dy="1.4" result="o"/><feFlood flood-color="#0a1f15" flood-opacity=".7"/><feComposite in2="o" operator="in" result="sh"/><feMerge><feMergeNode in="sh"/><feMergeNode in="g"/></feMerge></filter>
+ </defs>
+ <rect width="${W}" height="${H}" fill="#1F4A35"/>
+ <rect width="${W}" height="${H}" fill="#2B5A40" filter="url(#wear)" opacity=".22"/>
+ <rect width="${W}" height="${H}" fill="#0E2419" filter="url(#cloth)" opacity=".55"/>
+ <rect width="${W}" height="${H}" fill="url(#vg)"/>
+ <g class="gold" filter="url(#gilt)">
+  <rect x="${o-6}" y="${o-6}" width="${W-2*o+12}" height="${H-2*o+12}" class="rl"/>
+  <rect x="${inner+5}" y="${inner+5}" width="${W-2*inner-10}" height="${H-2*inner-10}" class="rl"/>
+  ${edge}
+  <path d="${S.ear}"/><path class="cr" d="${S.earRibs}"/>
+  <path d="${S.d}"/><path class="cr" d="${S.ribs}"/>
+  <text class="cs1" x="340" y="638" text-anchor="middle">自九世纪起，一直在路上</text>
+  <text class="cs2" x="340" y="700" text-anchor="middle">一条走向西班牙圣地亚哥的千年步行路</text>
+  <text class="cs2" x="340" y="730" text-anchor="middle">读懂它的来历，再排出你自己的行程</text>
+  <text class="cs3" x="340" y="872" text-anchor="middle">翻开</text>
+ </g>
+ <g class="tl"><text x="340" y="412" text-anchor="middle">Buen</text><text x="340" y="482" text-anchor="middle">Camino</text></g>
+</svg>`}
+
 /* ---------- Buen Camino: who the ghost is ---------- */
 const GH={
  ronc:['罗兰死在这儿，写诗的倒活得比他久。','一百八十三张床，一百八十三种呼噜声。'],
@@ -1001,7 +1049,7 @@ let rsT;$('#reset').onclick=e=>{const b=e.currentTarget;if(!b.dataset.arm){b.dat
 
 /* ---------- the book talks ---------- */
 function showCover(){const b=$('#intro');b.classList.remove('gone');$('#chooser').hidden=true;
- b.innerHTML=`<button class="cover" id="opn" type="button" aria-label="翻开这本书"><img src="${A('cover.jpg')}" alt="1495 年朝圣指南的扉页木刻，题名处印着 Buen Camino"><span class="ct">Buen Camino</span><span class="cs">自九世纪起，一直在路上</span><span class="cd">一条走向西班牙圣地亚哥的千年步行路<br>读懂它的来历，再排出你自己的行程</span><span class="cw">翻开</span></button>`;
+ b.innerHTML=`<button class="cover" id="opn" type="button" aria-label="翻开这本书：Buen Camino，一条走向西班牙圣地亚哥的千年步行路">${coverSVG()}<span class="strap"></span><span class="ribbon"></span></button>`;
  $('#skip').hidden=false;$('#opn').onclick=()=>{const c=$('#opn');c.classList.add('opening');setTimeout(()=>{S.page=0;if(S.road&&Object.keys(S.foot).length+Object.keys(S.pin).length>0)showBack();else{S.phase='intro';save();showPage()}},matchMedia('(prefers-reduced-motion:reduce)').matches?0:560)};}
 function showBack(){const b=$('#intro'),x=ROUTES.find(y=>y.id===S.road),c=CH[S.road];b.innerHTML=`<div class="spread"><figure class="pgl"><img src="${A('woodcut.jpg')}" alt=""><figcaption>1495 年朝圣指南的扉页木刻</figcaption></figure><div class="pgr"><div class="say"><p>又见面了。</p><p>上回走到${x.n}，同行的是 ${c.y} 年的${c.s}。你已读了 ${lit(S.road)}/${total(S.road)} 页。</p><p>接着走，还是从头再听我讲一遍？</p></div><div class="ans"><button type="button" id="bk1">接着走</button><button type="button" id="bk2">从头听一遍</button></div></div></div>`;$('#bk1').onclick=resume;$('#bk2').onclick=()=>{S.page=0;S.phase='intro';save();showPage()}}
 function resume(){$('#intro').classList.add('gone');$('#skip').hidden=true;if(S.road){S.phase='play';if(!S.node)S.node=nodesOf(S.road)[0];S.tab='here';save();render();flyRoad(S.road)}else{S.phase='choose';S.tab='routes';save();showChooser();render()}}
