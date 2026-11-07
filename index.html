@@ -358,6 +358,14 @@ body:has(.intro:not(.gone)) :is(.left,.right,.frame){visibility:hidden}
 .tp4{font-size:19px;letter-spacing:.16em;margin:0;color:#C0302E;font-weight:700}
 .tp5{text-align:center;font-size:11px;letter-spacing:.14em;color:#8a7a62;margin:6px 0 0}
 @media (max-width:860px){.spread.ex{grid-template-rows:minmax(0,.8fr) minmax(0,1fr)}.ep{padding:12px;background-size:100% 200%}.plate{width:64px;margin-bottom:6%}.tp1{font-size:26px}}
+
+#here{pointer-events:none}#here.off{display:none}
+#here .hr{fill:none;stroke:var(--red);stroke-width:2.4;transform-box:fill-box;transform-origin:center;animation:hp 2.4s cubic-bezier(.2,.6,.3,1) infinite}
+#here .h2{animation-delay:1.2s}
+#here .hd{fill:var(--red);stroke:var(--card);stroke-width:1.6;animation:hb 2.4s ease-in-out infinite}
+@keyframes hp{0%{transform:scale(.6);opacity:.95}100%{transform:scale(3.4);opacity:0}}
+@keyframes hb{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){#here .hr{animation:none;transform:scale(1.9);opacity:.6}#here .h2{display:none}#here .hd{animation:none}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition:none!important}}
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -968,6 +976,7 @@ function buildMap(){
  [['大 西 洋',40,430],['比 斯 开 湾',620,285]].forEach(([t,x,y])=>h+=`<g transform="translate(${x} ${y})"><g class="sc2"><rect class="seab" x="-48" y="-17" width="96" height="26"/><text class="seat" text-anchor="middle">${t}</text></g></g>`);
  Object.entries(NODES).forEach(([id,n])=>{const p=POS[id],l=LBL[id]||[12,0],an={m:'middle',e:'end'}[l[2]]||'start';h+=`<g class="node off ${n.side?'sd':''}" id="n-${id}" data-n="${id}" transform="translate(${p.map(v=>v.toFixed(1)).join(' ')})" tabindex="0" role="button"><g class="sc"><circle class="hit" r="17"/><circle class="halo" r="11"/>${n.side?`<circle class="pip" r="10.5"/><path class="ic" d="${ICON[n.side]}"/>`:'<circle class="pip" r="5.6"/>'}<text class="nm" x="${l[0]}" y="${l[1]}" text-anchor="${an}"></text><text class="pl" x="${l[0]}" y="${l[1]+15}" text-anchor="${an}">${PL[id]||''}</text></g></g>`});
  h+=pmHTML();
+ h+='<g id="here" class="off" aria-hidden="true"><g class="sc"><circle class="hr" r="10"/><circle class="hr h2" r="10"/><circle class="hd" r="4.2"/></g></g>';
  map.innerHTML=h;
 }
 let mvT;function fit(){map.classList.add('mv');clearTimeout(mvT);mvT=setTimeout(()=>map.classList.remove('mv'),180);map.setAttribute('viewBox',vb.map(v=>v.toFixed(1)).join(' '));const r=map.getBoundingClientRect(),k=Math.max(vb[2]/r.width,vb[3]/r.height);map.querySelectorAll('.sc,.sc2').forEach(g=>g.setAttribute('transform',`scale(${k})`))}
@@ -1064,6 +1073,7 @@ function render0(){
  const pc=Object.values(S.pin).filter(p=>p.s!=='skip').length;
  $('#tallies').innerHTML=`<div><b>${Object.keys(S.foot).length}</b>足迹</div><div><b>${pc}</b>行程中</div><div><b>${r.res.length}</b>必去</div>`;
  Object.keys(PICKS).forEach(i=>{const g=$('#pm-'+i),p=PICKS[i],vis=S.phase==='play'&&S.lens==='now'&&!!road&&pickRoad(p,road);g.classList.toggle('off',!vis);g.classList.toggle('on',pinOn(pickKey(i)))});
+ {const hg=$('#here'),p=S.node&&POS[S.node],on=S.phase==='play'&&!!p&&NODES[S.node]&&(NODES[S.node].route===road);hg.classList.toggle('off',!on);if(on)hg.setAttribute('transform',`translate(${p[0].toFixed(1)} ${p[1].toFixed(1)})`)}
  Object.entries(NODES).forEach(([id,n])=>{const g=$('#n-'+id),vis=n.route===road||S.done.includes(n.route);g.classList.toggle('off',!vis);g.classList.toggle('sel',id===S.node);g.classList.toggle('seen',pages(id)>0);g.classList.toggle('res',!!reson(id));g.querySelector('.nm').textContent=pv?n.past:n.now;const br=$('#br-'+id);if(br)br.classList.toggle('off',!vis);$('#d-'+id).classList.toggle('off',!vis);g.setAttribute('aria-label',pv?n.past:n.now);
   const pin=S.pin[id];g.querySelector('.pl').textContent=(PL[id]||'')+(S.foot[id]?' ◆':'')+(pin&&pin.s!=='skip'?' ▲':'');
   ['#s-','#si-','#st-','#d-'].forEach(q=>{const e=$(q+id);if(e){e.classList.toggle('l1',pages(id)===1);e.classList.toggle('l2',pages(id)===2)}})});
