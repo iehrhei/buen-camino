@@ -402,6 +402,20 @@ body.now #map[data-road=frances] .ps.f,body.now #map[data-road=portugues] .ps.p{
 #map[data-z="4"] .t2 .tn,#map[data-z="4"] .t3 .tn,#map[data-z="4"] .ps text,#map[data-z="4"] .tl{display:inline}
 body:not(.now) .key .kmod{display:none}
 #map .tw.chart .tn{display:inline}
+/* nightly lodging row */
+.nt{margin:6px 0 2px;padding:6px 0 0;border-top:1px dotted var(--line,rgba(40,30,20,.3))}
+.nh{font-size:13.5px;margin:0;font-weight:700;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+.nh small{font-weight:400;color:var(--mute);font-size:12px}
+.nh::before{content:"☾";color:var(--red);font-weight:400}
+.lv{font-size:11.5px;font-weight:700;padding:0 6px;border:1px solid currentColor;border-radius:2px;line-height:1.5}
+.lv.ok{color:var(--mute)}.lv.adv{color:#8A5A12}.lv.must{color:var(--paper,#F1E6C6);background:var(--red);border-color:var(--red)}
+.nd,.ns{font-size:13px;margin:3px 0 0;color:var(--ink);line-height:1.55}
+.ns{color:var(--red)}
+.nl{display:flex;flex-wrap:wrap;gap:4px 14px;margin:4px 0 2px;font-size:12.5px;align-items:center}
+.nl a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:3px}
+.nl .rm{display:inline-flex;gap:5px;align-items:center;color:var(--mute);cursor:pointer}
+.nl .rm input{accent-color:var(--red);margin:0}
+.stt{font-weight:700;color:var(--paper,#F1E6C6);background:var(--red);padding:0 5px;margin-right:2px;font-size:11px}
 </style>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <filter id="redink" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.0748 0.1468 0.0285 0 0.75  0.2422 0.4755 0.0923 0 0.19  0.2452 0.4813 0.0935 0 0.18  0 0 0 1 0"/></filter>
@@ -690,8 +704,89 @@ function dayRows(plan,mux,pace,start,keys,dayOf){const base=placeRows(plan,mux,p
  return out}
 function dayIssues(r){const out=[];if(!r.date)return out;const w=r.date.getDay(),m=r.date.getMonth(),md=(m+1)*100+r.date.getDate();
  r.ps.forEach(k=>{const i=pickOfKey(k);if(!i)return;const p=PICKS[i];if((p.closed||[]).includes(w)||(p.closedMonth||[]).includes(m))out.push({hard:1,t:`${p.n}：${p.closedTxt}`});else if(p.onlyDay&&!p.onlyDay.includes(w))out.push({hard:1,t:`${p.n}：${p.onlyTxt}`});else if(p.monthsOnly&&!p.monthsOnly.includes(m))out.push({hard:1,t:`${p.n}：${p.monthsTxt}`});else if((p.closedSoft||[]).includes(w))out.push({t:`${p.n}：${p.closedTxt}`});if(p.sunset&&!((md>=324&&md<=424)||(md>=818&&md<=919)))out.push({t:`${p.n}：这天不是欧洲大陆最后的日落`})});
+ r.ps.forEach(k=>{const p=PICKS[k];if(p&&p.stay&&r.to!==p.town)out.push({t:`想住“${p.n}”，这天要停在${p.town}。把每天走的公里数调小一点就行。`})});
  if(r.segs&&r.segs.some(x=>x.s==='f'&&x.k===1)&&(m>=10||m<=2))out.push({t:'11 月到 3 月拿破仑路线关闭，要走瓦尔卡洛斯路线'});
  return out}
+
+/* Where to sleep each night. Keyed by the stage-town names used in STAGES*.
+   g: Gronze page path (gronze.com/<g>) or a full URL when Gronze's page could not be confirmed.
+   bk: search text for Booking.com.  pub: has a public / parish / association albergue.
+   res: that public albergue takes reservations.  small: few beds in total.  gal: in Galicia (last stretch, busiest).
+   t: what to know.  Checked 2026-11; beds and prices change every season. */
+const LODGE_CHECKED='2026 年 11 月核对';
+const LODGE={
+ '圣让':{g:'francia/pirineos-atlanticos/saint-jean-pied-port-donibane-garazi',bk:'Saint-Jean-Pied-de-Port, France',pub:1,t:'朝圣者办公室附近有公立庇护所，另有十来家私立，多数能订。想把翻山拆成两天，就住 8 公里外山上的奥里松（Orisson）：4 月到 10 月中开，必须含晚饭和早饭，约 €50，旺季要很早订。'},
+ '龙塞斯瓦列斯':{g:'navarra/roncesvalles-orreaga',bk:'Roncesvalles, Navarra, Spain',pub:1,res:1,ron:1,t:'几乎只有修道院庇护所一处：183 床，€15 起，全年开。可以在它的网站申请预订，5 到 9 月基本必须订。'},
+ '苏维里':{g:'navarra/zubiri',bk:'Zubiri, Navarra, Spain',pub:1,t:'市立庇护所 74 床，3 月到 11 月初开，另有几家私立。'},
+ '潘普洛纳':{g:'navarra/pamplona-iruna',bk:'Pamplona, Spain',pub:1,city:1,t:'市立 Jesús y María 庇护所在老城，私立和旅馆很多。'},
+ '普恩特拉雷纳':{g:'navarra/puente-reina-gares',bk:'Puente la Reina, Navarra, Spain',pub:1,t:'Padres Reparadores 庇护所 90 床，全年开，另有几家私立。'},
+ '埃斯特拉':{g:'navarra/estella-lizarra',bk:'Estella, Navarra, Spain',pub:1,t:'有公立和教区庇护所，私立也不少。'},
+ '洛斯阿尔科斯':{g:'navarra/arcos',bk:'Los Arcos, Navarra, Spain',pub:1,t:'公立 Isaac Santiago 庇护所 70 床，3 到 10 月开，另有几家私立。'},
+ '洛格罗尼奥':{g:'rioja/logrono',bk:'Logroño, Spain',pub:1,city:1,t:'公立和教区庇护所都是随意捐赠，城里旅馆很多。'},
+ '纳赫拉':{g:'rioja/najera',bk:'Nájera, Spain',pub:1,t:'公立庇护所 48 床，全年开，另有几家私立。'},
+ '圣多明各':{g:'rioja/santo-domingo-calzada',bk:'Santo Domingo de la Calzada, Spain',pub:1,res:1,t:'朝圣者兄弟会的庇护所 164 床，€13，全年开，可以预订。'},
+ '贝洛拉多':{g:'castilla-y-leon/burgos/belorado',bk:'Belorado, Burgos, Spain',pub:1,t:'市立 El Corro 庇护所，另有几家私立。'},
+ '圣胡安-德奥尔特加':{g:'castilla-y-leon/burgos/san-juan-ortega',bk:'San Juan de Ortega, Burgos, Spain',pub:1,small:1,t:'只是个小村子：修道院庇护所加一两家民宿。晚到可能没床，要再走 4 公里左右到下一个村。'},
+ '布尔戈斯':{g:'castilla-y-leon/burgos/burgos',bk:'Burgos, Spain',pub:1,city:1,t:'市立庇护所 Casa del Cubo 就在大教堂旁，城里旅馆很多。'},
+ '奥尼略斯':{g:'https://www.pilgrim.es/camino-frances/hornillos-del-camino/',bk:'Hornillos del Camino, Burgos, Spain',pub:1,small:1,t:'村子很小，一家市立庇护所加几家私立，旺季下午就满。'},
+ '卡斯特罗赫里斯':{g:'castilla-y-leon/burgos/castrojeriz',bk:'Castrojeriz, Spain',pub:1,t:'市立 San Esteban 庇护所，另有几家私立。'},
+ '弗罗米斯塔':{g:'castilla-y-leon/palencia/fromista',bk:'Frómista, Spain',pub:1,t:'有市立庇护所，私立也有几家。'},
+ '卡里翁':{g:'castilla-y-leon/palencia/carrion-condes',bk:'Carrión de los Condes, Spain',pub:1,t:'修女办的教区庇护所 50 床，€9，4 到 10 月开，不能订。另有几家私立和旅馆。'},
+ '特拉迪略斯':{g:'https://www.pilgrim.es/camino-frances/terradillos-de-los-templarios/',bk:'Terradillos de los Templarios, Spain',pub:0,small:1,t:'没有公立庇护所，只有 Los Templarios 和 Jacques de Molay 两家私立，都能订。'},
+ '贝西亚诺斯':{g:'castilla-y-leon/leon/bercianos-real-camino',bk:'Bercianos del Real Camino, Spain',pub:1,small:1,t:'教区 Casa Rectoral 庇护所，另有一两家私立。'},
+ '曼西利亚':{g:'castilla-y-leon/leon/mansilla-mulas',bk:'Mansilla de las Mulas, Spain',pub:1,t:'市立庇护所还在重修，2025 年用的是约 30 床的临时庇护所。另有 El Jardín del Camino、Gaia 等私立。'},
+ '莱昂':{g:'castilla-y-leon/leon/leon',bk:'León, Spain',pub:1,city:1,t:'本笃会修女的 Carbajalas 庇护所 85 床，随意捐赠，3 到 10 月开，不能订。城里旅馆很多。'},
+ '奥斯皮塔尔-德奥尔维戈':{g:'castilla-y-leon/leon/hospital-orbigo',bk:'Hospital de Órbigo, Spain',pub:1,t:'教区 Karl Leisner 庇护所，另有几家私立。'},
+ '阿斯托加':{g:'castilla-y-leon/leon/astorga',bk:'Astorga, Spain',pub:1,city:1,t:'Siervas de María 庇护所，另有私立和旅馆。'},
+ '拉瓦纳尔':{g:'castilla-y-leon/leon/rabanal-camino',bk:'Rabanal del Camino, Spain',pub:1,small:1,t:'Gaucelmo 庇护所 36 床，随意捐赠，3 月底到 10 月开，不能订。另有几家私立。'},
+ '莫利纳塞卡':{g:'castilla-y-leon/leon/molinaseca',bk:'Molinaseca, Spain',pub:1,t:'市立 San Roque 庇护所在镇口，镇里还有几家私立。'},
+ '比利亚弗兰卡':{g:'castilla-y-leon/leon/villafranca-bierzo',bk:'Villafranca del Bierzo, Spain',pub:1,t:'市立庇护所在镇口，镇里私立不少。'},
+ '奥塞夫雷罗':{g:'galicia/lugo/cebreiro',bk:'O Cebreiro, Lugo, Spain',pub:1,small:1,gal:1,t:'山顶小村。加利西亚政府的公立庇护所 €10，不能订；私立和旅馆只有几家，旺季要早到或早订。'},
+ '特里亚卡斯特拉':{g:'galicia/lugo/triacastela',bk:'Triacastela, Spain',pub:1,gal:1,t:'公立庇护所 €10，不能订；另有好几家私立。'},
+ '萨里亚':{g:'galicia/lugo/sarria',bk:'Sarria, Lugo, Spain',pub:1,gal:1,last:1,t:'公立庇护所 €10，不能订。这里是最后 100 公里的起点，私立很多，旺季也会满。'},
+ '波尔托马林':{g:'galicia/lugo/portomarin',bk:'Portomarín, Spain',pub:1,gal:1,last:1,t:'公立庇护所 €10，不能订；私立很多。'},
+ '帕拉斯德雷':{g:'galicia/lugo/palas-rei',bk:'Palas de Rei, Spain',pub:1,gal:1,last:1,t:'镇上的公立庇护所改建后只剩 24 床，不能订；镇外还有 Os Chacotes 公立庇护所，私立不少。'},
+ '阿尔苏阿':{g:'galicia/coruna/arzua',bk:'Arzúa, Spain',pub:1,gal:1,last:1,t:'公立庇护所 €10，不能订；私立很多。'},
+ '奥佩德罗索':{g:'galicia/coruna/o-pedrouzo-o-pino',bk:'O Pedrouzo, Spain',pub:1,gal:1,last:1,t:'公立庇护所 150 床，€10，不能订；私立很多。'},
+ '圣地亚哥':{g:'galicia/coruna/santiago-compostela',bk:'Santiago de Compostela, Spain',pub:1,res:1,gal:1,last:1,city:1,t:'大部分庇护所和旅馆都能订，比如 Seminario Menor（3 到 10 月开，床位 €22 起）。7 月 25 日前后最难订。'},
+ '波尔图':{g:'portugal/oporto/porto',bk:'Porto, Portugal',pub:1,city:1,t:'协会办的朝圣者庇护所在老城，城里旅馆很多。'},
+ '比拉里尼奥':{g:'portugal/oporto/vilarinho',bk:'Vilarinho, Vila do Conde, Portugal',pub:0,small:1,t:'市立小庇护所目前关着，只有 Casa da Laura 等两家私立，床少，建议提前订。'},
+ '巴塞卢什':{g:'portugal/braga/barcelos',bk:'Barcelos, Portugal',pub:1,t:'协会办的 Cidade de Barcelos 庇护所 26 床，随意捐赠，不能订；另有私立和旅馆。'},
+ '蓬蒂-迪利马':{g:'portugal/viana-do-castelo/ponte-lima',bk:'Ponte de Lima, Portugal',pub:1,t:'市立庇护所在老桥对岸，另有青年旅舍和民宿。'},
+ '鲁比昂斯':{g:'portugal/viana-do-castelo/rubiaes',bk:'Rubiães, Portugal',pub:1,small:1,t:'有市立庇护所，私立和民宿只有几家。'},
+ '图伊':{g:'galicia/pontevedra/tui',bk:'Tui, Pontevedra, Spain',pub:1,gal:1,last:1,t:'公立庇护所 36 床，€10，不能订；另有几家私立。'},
+ '波里尼奥':{g:'galicia/pontevedra/porrino',bk:'O Porriño, Spain',pub:1,gal:1,last:1,t:'公立庇护所，不能订；镇里有几家私立。'},
+ '阿尔卡德':{g:'galicia/pontevedra/arcade',bk:'Arcade, Pontevedra, Spain',pub:0,gal:1,last:1,t:'没找到公立庇护所，只有 Casa Calvar、Lameiriñas 等几家私立，都能订。'},
+ '蓬特韦德拉':{g:'galicia/pontevedra/pontevedra',bk:'Pontevedra, Spain',pub:1,gal:1,last:1,city:1,t:'公立 Virgen Peregrina 庇护所，城里旅馆很多。'},
+ '卡尔达斯':{g:'galicia/pontevedra/caldas-reis',bk:'Caldas de Reis, Spain',pub:0,gal:1,last:1,t:'这里多是私立庇护所和温泉旅馆，基本都能订。'},
+ '帕德龙':{g:'galicia/coruna/padron',bk:'Padrón, Spain',pub:1,gal:1,last:1,t:'公立庇护所，不能订；另有私立。'},
+ '内格雷拉':{g:'https://caminodesantiago.me/camino-guides/en/places/spain/camino-to-finisterre-and-muxia/negreira',bk:'Negreira, Spain',pub:1,gal:1,t:'公立庇护所，不能订；另有几家私立。'},
+ '奥尔韦罗亚':{g:'galicia/coruna/olveiroa',bk:'Olveiroa, Spain',pub:1,small:1,gal:1,t:'小村子：公立庇护所加一两家私立。'},
+ '科尔库比翁':{g:'https://www.turismo.gal/localizador-de-recursos/-/sit/donde-alojarse/corcubion?langId=es_ES',bk:'Corcubión, Spain',pub:1,small:1,gal:1,t:'镇上方的 San Roque 有个很小的公立庇护所，镇里和隔壁的塞埃还有私立和旅馆。'},
+ '菲斯特拉':{g:'galicia/coruna/fisterra',bk:'Fisterra, Spain',pub:1,gal:1,t:'公立庇护所在港口，不能订；私立很多。'},
+ '穆希亚':{g:'galicia/coruna/muxia',bk:'Muxía, Spain',pub:1,gal:1,t:'公立庇护所，不能订；另有几家私立。'}
+};
+const LODGE_SRC=[['Hosteltur 2026：什么时候要订','https://www.hosteltur.com/176453_hace-falta-reservar-alojamiento-en-el-camino-de-santiago.html'],['龙塞斯瓦列斯庇护所','https://www.alberguescaminosantiago.com/albergues/albergue-de-peregrinos-de-la-real-colegiata-de-roncesvalles-navarra/'],['奥里松','https://www.refuges.info/point/10489/gite-d-etape/refuge-d-Orisson/en/geo:43.10881,-1.23927'],['加利西亚公立庇护所规则','https://www.alberguescaminosantiago.com/albergues/albergue-de-peregrinos-de-la-xunta-de-galicia-palas-de-rei-lugo/'],['曼西利亚临时庇护所','https://www.alberguescaminosantiago.com/2025/10/mansilla-de-las-mulas-el-futuro-albergue-municipal-que-sigue-esperando-en-pleno-camino-frances/'],['Gronze 住宿列表','https://www.gronze.com/navarra/zubiri']];
+function lodgeURL(t){const o=LODGE[t];if(!o)return '';return o.g.startsWith('http')?o.g:'https://www.gronze.com/'+o.g}
+function bookURL(t,date){const o=LODGE[t];if(!o)return '';const q=encodeURIComponent(o.bk).replace(/%20/g,'+');let u=`https://www.booking.com/searchresults.zh-cn.html?ss=${q}&group_adults=1&no_rooms=1&group_children=0`;if(date){const f=d=>d.toISOString().slice(0,10),a=new Date(date.getTime()),b=new Date(date.getTime()+864e5);u+=`&checkin=${f(a)}&checkout=${f(b)}`}return u}
+/* How hard is it to find a bed that night? 2 = book ahead, 1 = better book, 0 = usually fine. Rules follow Hosteltur 2026 and the pages above. */
+function lodgeLevel(t,date){const o=LODGE[t];if(!o||!date)return null;const m=date.getMonth(),md=(m+1)*100+date.getDate(),peak=m>=5&&m<=8,mid=m===3||m===4||m===9,win=!peak&&!mid;
+ if(t==='圣地亚哥'&&md>=720&&md<=727)return {lv:2,why:'圣雅各节前后'};
+ if(o.ron&&(peak||m===4))return {lv:2,why:'5 到 9 月几乎必须订'};
+ if(win)return {lv:(!o.pub||o.small||o.ron)?1:0,why:o.ron?'淡季也建议订':!o.pub?'没有公立庇护所':o.small?'床位少':''};
+ let s=peak?2:1;if(o.last)s+=1;if(!o.pub||o.small)s+=1;if(o.city&&!o.last)s-=1;
+ const w=[peak?'旺季':'',o.last?'最后一段人最多':'',!o.pub?'没有公立庇护所':o.small?'床位少':''].filter(Boolean).join('，');
+ return {lv:s>=3?2:s===2?1:0,why:s>=2?w:''}}
+/* Stays worth a night of their own. They sit with the other picks and replace that night's default bed. */
+Object.assign(PICKS,{
+ carrionst:{stay:1,monthsOnly:[3,4,5,6,7,8,9],monthsTxt:'这家 4 月到 10 月才开',n:'修女庇护所的晚上',town:'卡里翁',why:'奥古斯丁会修女办的教区庇护所。每晚有一场唱歌和祈祷的聚会，19:00 有朝圣者祝福，5 月起常有大家一起做的晚饭。',eur:9,src:[['Albergues Camino Santiago','https://www.alberguescaminosantiago.com/albergues/albergue-de-peregrinos-de-la-parroquia-de-santa-maria-carrion-de-los-condes-palencia']],act:{t:'walk',l:'不能预订，下午早点到'},note:'50 床，4 月到 10 月开，22:30 关门。一起吃饭时大家通常各带一点食材。'},
+ leonst:{stay:1,monthsOnly:[2,3,4,5,6,7,8,9],monthsTxt:'这家 3 月到 10 月才开',n:'修女们唱的祝福',town:'莱昂',why:'住进老城的本笃会修女院庇护所。傍晚修女们唱晚祷，再用歌声为朝圣者祝福。',eur:null,ptxt:'随意捐赠，带上现金',src:[['Albergues Camino Santiago','https://www.alberguescaminosantiago.com/albergues/albergue-de-peregrinos-del-monasterio-de-las-benedictinas-carbajalas-leon']],act:{t:'walk',l:'不能预订，19:00 前到'},note:'85 床，男女分住，3 月到 10 月开，22:00 关门后不能再进出。'},
+ rabanalst:{stay:1,monthsOnly:[3,4,5,6,7,8,9],monthsTxt:'这家 3 月底到 10 月才开',n:'Gaucelmo 的下午茶',town:'拉瓦纳尔',why:'一家由英国圣雅各兄弟会参与打理的老庇护所。下午 5 点，志愿者在花园里摆出茶和自制点心。附近修道院唱格列高利圣咏，正好接上“拉瓦纳尔晚祷”那一项。',eur:null,ptxt:'随意捐赠',src:[['Albergues Camino Santiago','https://www.alberguescaminosantiago.com/camino-frances/albergue-gaucelmo-rabanal-del-camino/']],act:{t:'walk',l:'不能预订'},note:'36 床，3 月底到 10 月开，步行者优先，不收 7 人以上的团。'},
+ paradorst:{stay:1,roads:['frances','portugues'],n:'住进 1499 年的朝圣者医院',town:'圣地亚哥',why:'大教堂广场边的国营酒店，前身是天主教双王 1499 年建的皇家医院，专门收留走到终点的朝圣者。',eur:200,est:1,src:[['CaminoWays','https://caminoways.com/?p=4644']],act:{t:'book',url:'https://www.booking.com/searchresults.zh-cn.html?ss=Parador+de+Santiago+Hostal+Reis+Catolicos&group_adults=1&no_rooms=1&group_children=0',l:'在 Booking 查空房'},note:'价格是我估的，旺季更贵。CaminoWays 说酒店至今每天请最先凭证书来的十位朝圣者吃一顿饭，去之前问清楚。'}
+});
+Object.assign(LOC,{carrionst:'f16',leonst:'f20',rabanalst:'f23'});
+Object.assign(ENDLOC,{paradorst:{f:33,p:11}});
+Object.assign(PMAP,{carrionst:['@T','卡里翁'],leonst:['leon',15,5],rabanalst:['rabanal',-14,10],paradorst:['san',0,-21]});
 
 /* First-time guide. Dated facts carry their own checks so they can be revisited. */
 const FIRST={
@@ -966,7 +1061,7 @@ const EATFACT='中世纪的朝圣者主要吃粗面包、粥、豆子，喝当�
 const $=s=>document.querySelector(s);
 const yuan=n=>(n<0?'−':'')+'¥'+Math.abs(Math.round(n)).toLocaleString('en-US');
 /* ---------- state ---------- */
-const NEW=()=>({phase:'cover',page:0,why:'none',from:'cn',lens:'past',road:null,node:null,tab:'here',hp:6,coin:3,faith:4,foot:{},pin:{},plan:'leon',mux:false,pace:22,days:14,budget:25000,comfort:0,done:[],start:''});
+const NEW=()=>({room:{},phase:'cover',page:0,why:'none',from:'cn',lens:'past',road:null,node:null,tab:'here',hp:6,coin:3,faith:4,foot:{},pin:{},plan:'leon',mux:false,pace:22,days:14,budget:25000,comfort:0,done:[],start:''});
 let S=NEW();try{const r=JSON.parse(localStorage.getItem('buen-camino-v1'));if(r)S={...S,...r}}catch(e){}
 if(S.picks){Object.keys(S.picks).forEach(i=>{const id=i==='leon'?'leonct':i,p=PICKS[id];if(p){const k=p.node||id;if(!S.pin[k]){const c=NODES[k]&&NODES[k].N.c[0];S.pin[k]=c?{s:c.s,yen:c.yen||0,day:c.day||0,c:0}:{s:'must',yen:pickYen(p),day:p.extra?1:0,c:0}}}});delete S.picks}
 const save=()=>{try{localStorage.setItem('buen-camino-v1',JSON.stringify(S))}catch(e){}};
@@ -1024,7 +1119,7 @@ function buildMap(){
  LIVE.forEach(r=>{CHUNK[r].forEach((c,i)=>h+=`<path class="segi" id="si-${c.id}" style="stroke:${COL[r]}" d="${dpath(c.p)}"/><path class="segt" id="st-${c.id}" d="${dpath(c.p)}"/><path class="seg" id="s-${c.id}" d="${dpath(c.p)}"/>`);h+=`<path class="sweep" id="sw-${r}" style="stroke:${COL[r]}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" d="${dpath(DR[r])}"/>`});
  ROUTES.forEach(r=>{if(r.open)h+=`<path class="rhit" data-r="${r.id}" d="${dpath(r.id==='fin'?DR_G.fin:DR[r.id])}"/>`});
  Object.keys(NODES).forEach(id=>h+=vig(id));
- const pmHTML=()=>Object.keys(PICKS).map(i=>{const p=PICKS[i],m=PMAP[i],at=p.node?POS[p.node]:N[m[0]],dx=p.node?12:m[1],dy=p.node?-12:m[2];return `<g class="pm off" id="pm-${i}" data-pm="${i}" transform="translate(${at.map(v=>v.toFixed(1)).join(' ')})" tabindex="0" role="button" aria-label="精选：${p.n}"><g class="sc"><g transform="translate(${dx} ${dy})"><circle class="pmh" r="11"/><path class="pmi" d="M0-6L6 0L0 6L-6 0Z"/><text class="pmt" x="10" y="4">${p.n}</text></g></g></g>`}).join('');
+ const pmHTML=()=>Object.keys(PICKS).map(i=>{const p=PICKS[i],m=PMAP[i],at=p.node?POS[p.node]:m[0]==='@T'?GEO.T.find(t=>t.n===m[1]).xy:N[m[0]],dx=p.node?12:m[0]==='@T'?0:m[1],dy=p.node?-12:m[0]==='@T'?0:m[2];return `<g class="pm off" id="pm-${i}" data-pm="${i}" transform="translate(${at.map(v=>v.toFixed(1)).join(' ')})" tabindex="0" role="button" aria-label="精选：${p.n}"><g class="sc"><g transform="translate(${dx} ${dy})"><circle class="pmh" r="11"/><path class="pmi" d="M0-6L6 0L0 6L-6 0Z"/><text class="pmt" x="10" y="4">${p.n}</text></g></g></g>`}).join('');
  Object.keys(OFF).forEach(id=>{const a=N[NODES[id].xy],b=POS[id],mx=(a[0]+b[0])/2+(b[1]-a[1])*.14,my=(a[1]+b[1])/2-(b[0]-a[0])*.14;h+=`<path class="br" id="br-${id}" d="M${a[0]} ${a[1]}Q${mx.toFixed(1)} ${my.toFixed(1)} ${b[0]} ${b[1]}"/>`});
  const LAB={norte:[N.gij[0]-50,N.gij[1]-16],primitivo:[N.ovi[0]-60,N.ovi[1]+40],ingles:[N.fer[0]+14,N.fer[1]-4],plata:[N.mer[0]+12,N.mer[1]],portugues:[N.lis[0]+14,N.lis[1]+4],frances:[N.sjpp[0]+14,N.sjpp[1]+4],invierno:[N.mon[0]-30,N.mon[1]+26],aragones:[N.jac[0]+14,N.jac[1]+24],fin:[230,500]};
  ROUTES.forEach(r=>{h+=`<g transform="translate(${LAB[r.id].join(' ')})"><text class="rn sc2" id="rn-${r.id}">${r.n}</text></g>`});
@@ -1069,7 +1164,7 @@ function calc(){
  let extraY=0,extraD=0;on.forEach(i=>{const w=S.pin[i];if(w&&w.s!=='skip'){extraY+=w.yen||0;extraD+=w.day||0}});
  planKeys().filter(k=>!NODES[k]).forEach(k=>{extraY+=S.pin[k].yen||0;extraD+=S.pin[k].day||0});
  if(!S.mux&&S.pin.mux&&S.pin.mux.s==='pay')extraY+=200;
- const transit=2+(S.mux?1:0),days=walk+extraD+transit,flight=6000,living=(walk+extraD)*rate,all=flight+living+extraY,res=Object.keys(NODES).filter(reson),hit=res.filter(i=>on.includes(i));
+ const singles=S.comfort?0:rowsNow().filter(x=>!x.noTown&&S.room&&S.room[x.to]).length,transit=2+(S.mux?1:0),days=walk+extraD+transit,flight=6000,living=(walk+extraD)*rate+singles*480,all=flight+living+extraY,res=Object.keys(NODES).filter(reson),hit=res.filter(i=>on.includes(i));
  return {p,km,walk,days,transit,extraD,extraY,flight,living,total:all,res,hit,on};
 }
 function act(id,ci){
@@ -1168,14 +1263,19 @@ function rHere(){
 function rRoutes(){const sh=$('#sheet');sh.innerHTML=`<h2 class="h">路线</h2><p class="voice">读得越多，这里画得越满。</p>${bandsHTML(false)}`;wireBands(sh)}
 function pickDay(i,rows){const k=pickKey(i),l=ENDLOC[k]?null:LOC[k];const hit=rows.find(r=>r.segs&&r.segs.some(x=>ENDLOC[k]?ENDLOC[k][x.s]===x.k:l===x.s+x.k));return hit?hit.n:0}
 function picksHTML(r){const ids=Object.keys(PICKS).filter(i=>pickRoad(PICKS[i],r));if(!ids.length)return '';const rows=dayRows(S.plan,S.mux,S.pace,'',[],()=>0);ids.sort((x,y)=>(pickDay(x,rows)||999)-(pickDay(y,rows)||999));const act=p=>{const a=p.act;return a.t==='book'?`<a class="go" href="${a.url}" target="_blank" rel="noopener">${a.l}</a>`:a.t==='call'?`<a class="go" href="tel:${a.tel}">${a.l}</a>`:`<span class="pkw">${a.l}</span>`};
- return `<h3 class="sb">精选</h3><p class="help">我从官方页面、米其林和当地资料里挑了 ${ids.length} 个，${CHECKED}。分数不是标准，别处没有才算数。</p><div class="pks">${ids.map(i=>{const p=PICKS[i],a=p.act,k=pickKey(i),on=pinOn(k),n=pickDay(i,rows),fix=n?'':(r==='fin'?'mux':r==='portugues'?'porto':'full');return `<article class="pk" id="pk-${i}"><p class="meta">${p.town}${n?` · 第 ${n} 天`:' · 不在当前路线上'}</p><h3>${p.n}</h3><p>${p.why}</p><p class="pkn">${p.note}${a.p?` ${a.p}`:''}</p>${a.say?`<p class="say1" lang="es">${SAY_ES}</p>`:''}<p class="pkc">${p.eur==null?'价格未查到':p.eur===0?'免费':`${p.est?'约 ':''}€${p.eur}，约 ${yuan(pickYen(p))}`}${p.extra?' · 多留一天':''}</p><div class="row">${act(p)}${n?`<button class="mini" type="button" data-pk="${i}" aria-pressed="${!!on}">${on?'已加入行程':'加入行程'}</button>`:`<button class="mini" type="button" data-pkf="${i}" data-f="${fix}">${fix==='mux'?'加上世界尽头并加入':fix==='porto'?'改走葡萄牙之路并加入':'改走全程并加入'}</button>`}${p.node?`<button class="mini" type="button" data-pkn="${p.node}">看详情</button>`:''}</div>${p.src?`<p class="pks1">${p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ')}</p>`:''}</article>`}).join('')}</div>`}
-function pickAdd(i){const p=PICKS[i],k=pickKey(i),n=NODES[k];if(pinOn(k)){delete S.pin[k];return}if(n){const c=n.N.c[0];S.pin[k]={s:c.s,yen:c.yen||0,day:c.day||0,c:0}}else S.pin[k]={s:'must',yen:pickYen(p),day:p.extra?1:0,c:0}}
+ return `<h3 class="sb">精选</h3><p class="help">我从官方页面、米其林和当地资料里挑了 ${ids.length} 个，${CHECKED}。分数不是标准，别处没有才算数。</p><div class="pks">${ids.map(i=>{const p=PICKS[i],a=p.act,k=pickKey(i),on=pinOn(k),n=pickDay(i,rows),fix=n?'':(r==='fin'?'mux':r==='portugues'?'porto':'full');return `<article class="pk" id="pk-${i}"><p class="meta">${p.stay?'<b class="stt">住一晚</b> ':''}${p.town}${n?` · 第 ${n} 天`:' · 不在当前路线上'}</p><h3>${p.n}</h3><p>${p.why}</p><p class="pkn">${p.note}${a.p?` ${a.p}`:''}</p>${a.say?`<p class="say1" lang="es">${SAY_ES}</p>`:''}<p class="pkc">${p.ptxt?p.ptxt:p.eur==null?'价格未查到':p.eur===0?'免费':p.stay?(p.eur<=15?`€${p.eur}，和普通庇护所差不多`:`${p.est?'约 ':''}€${p.eur}，比住庇护所多约 ${yuan((p.eur-15)*8)}`):`${p.est?'约 ':''}€${p.eur}，约 ${yuan(pickYen(p))}`}${p.extra?' · 多留一天':''}</p><div class="row">${act(p)}${n?`<button class="mini" type="button" data-pk="${i}" aria-pressed="${!!on}">${on?'已加入行程':'加入行程'}</button>`:`<button class="mini" type="button" data-pkf="${i}" data-f="${fix}">${fix==='mux'?'加上世界尽头并加入':fix==='porto'?'改走葡萄牙之路并加入':'改走全程并加入'}</button>`}${p.node?`<button class="mini" type="button" data-pkn="${p.node}">看详情</button>`:''}</div>${p.src?`<p class="pks1">${p.src.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ')}</p>`:''}</article>`}).join('')}</div>`}
+function pickAdd(i){const p=PICKS[i],k=pickKey(i),n=NODES[k];if(pinOn(k)){delete S.pin[k];return}if(n){const c=n.N.c[0];S.pin[k]={s:c.s,yen:c.yen||0,day:c.day||0,c:0}}else S.pin[k]={s:'must',yen:p.stay?Math.max(0,(p.eur||0)-15)*8:pickYen(p),day:p.extra?1:0,c:0}}
 function wirePicks(){document.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{pickAdd(b.dataset.pk);save();render()});
  document.querySelectorAll('[data-pkf]').forEach(b=>b.onclick=()=>{if(b.dataset.f==='mux')S.mux=true;else S.plan=b.dataset.f;if(!pinOn(pickKey(b.dataset.pkf)))pickAdd(b.dataset.pkf);save();render()});
  document.querySelectorAll('[data-pkn]').forEach(b=>b.onclick=()=>{S.lens='now';S.tab='here';pick(b.dataset.pkn)})}
 function daysHTML(){const rows=rowsNow();const f=d=>`${d.getMonth()+1}/${d.getDate()} 周${'日一二三四五六'[d.getDay()]}`,keys=planKeys(),off=Object.keys(S.pin).filter(k=>pinOn(k)&&!keys.includes(k)),today=new Date();today.setHours(0,0,0,0);
  const past=S.start&&new Date(S.start+'T12:00:00')<today;
- return `<h3 class="sb">按天安排</h3><div class="fld"><label for="f-s">出发</label><input id="f-s" type="date" value="${S.start||''}"></div>${past?'<p class="dw">这个出发日已经过了。</p>':''}<p class="help">${S.start?'日期已经排好。标红的是当天做不了的事。':'选好出发日，就能检查闭店和季节。'}只算走路和多留的日子，往返路上另算。</p>${off.length?`<p class="dw">有 ${off.length} 项不在当前路线上：${off.map(nameOf).join('、')}。</p>`:''}<div class="dayl">${rows.map(r=>{const is=dayIssues(r);return `<div class="day${is.some(x=>x.hard)?' bad':''}"><p class="dn">第 ${r.n} 天${r.date?` · ${f(r.date)}`:''}</p><div><h3>${r.rest?`留在${r.to}`:`${r.from} → ${r.to}`}${r.km?` <small>${r.km} km</small>`:''}</h3>${r.noTown?'<p class="pkn">这段太长，住处要在途中再定。</p>':''}${r.ps.map(k=>{const i=pickOfKey(k);return `<p class="dp">${nameOf(k)}${i&&PICKS[i].act.t!=='walk'?' <em>要预约</em>':''}</p>`}).join('')}${is.map(x=>`<p class="dw">${x.t}</p>`).join('')}</div></div>`}).join('')}</div>`}
+ return `<h3 class="sb">按天安排</h3><div class="fld"><label for="f-s">出发</label><input id="f-s" type="date" value="${S.start||''}"></div>${past?'<p class="dw">这个出发日已经过了。</p>':''}<p class="help">${S.start?'日期已经排好。标红的是当天做不了的事，每晚也标了要不要提前订床。':'选好出发日，就能检查闭店和季节，也能算出哪几晚要提前订床。'}${rows.some(r=>r.date&&[10,11,0,1,2].includes(r.date.getMonth()))?'</p><p class="dw">11 月到 3 月不少庇护所关门。每晚出发前打电话问一下开没开。':''}只算走路和多留的日子，往返路上另算。</p>${off.length?`<p class="dw">有 ${off.length} 项不在当前路线上：${off.map(nameOf).join('、')}。</p>`:''}<div class="dayl">${rows.map(r=>{const is=dayIssues(r);return `<div class="day${is.some(x=>x.hard)?' bad':''}"><p class="dn">第 ${r.n} 天${r.date?` · ${f(r.date)}`:''}</p><div><h3>${r.rest?`留在${r.to}`:`${r.from} → ${r.to}`}${r.km?` <small>${r.km} km</small>`:''}</h3>${r.noTown?'<p class="pkn">这段太长，住处要在途中再定。</p>':''}${r.ps.filter(k=>!(PICKS[k]&&PICKS[k].stay)).map(k=>{const i=pickOfKey(k);return `<p class="dp">${nameOf(k)}${i&&PICKS[i].act.t!=='walk'?' <em>要预约</em>':''}</p>`}).join('')}${is.map(x=>`<p class="dw">${x.t}</p>`).join('')}${nightHTML(r,rows)}</div></div>`}).join('')}</div><p class="pks1">住宿资料（${LODGE_CHECKED}）：${LODGE_SRC.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' · ')}</p>`}
+function stayFor(r,rows){const town=r.to;return Object.keys(S.pin).find(k=>PICKS[k]&&PICKS[k].stay&&pinOn(k)&&PICKS[k].town===town&&rows.some(x=>x.to===town&&x.ps.includes(k)))}
+function nightHTML(r,rows){const t=r.to,o=LODGE[t];if(!o||r.noTown)return '';
+ const st=stayFor(r,rows),lv=st?null:lodgeLevel(t,r.date),tag=lv?['<span class="lv ok">一般不用订</span>','<span class="lv adv">最好先订</span>','<span class="lv must">要提前订</span>'][lv.lv]:'';
+ const prev=rows[rows.indexOf(r)-1],again=r.rest||(prev&&prev.to===t);
+ return `<div class="nt"><p class="nh">今晚 · ${again?'继续住在':''}${t}${tag}${lv&&lv.why?` <small>${lv.why}</small>`:''}</p>${st?`<p class="ns">住进精选：${PICKS[st].n}</p>`:again?'':`<p class="nd">${o.t}</p>`}<p class="nl">${st?'':`<a href="${lodgeURL(t)}" target="_blank" rel="noopener">看这里所有住处</a><a href="${bookURL(t,r.date)}" target="_blank" rel="noopener">${r.date?'查这天的空房':'在 Booking 查空房'}</a>`}${S.comfort||st?'':`<label class="rm"><input type="checkbox" data-room="${t}" ${S.room&&S.room[t]?'checked':''}>这里住单间 <small>+¥480</small></label>`}</p></div>`}
 function rTaste(){const r=S.road,items=sidesOf(r),pv=S.lens==='past',row=i=>{const n=NODES[i],done=[S.foot[i]?'◆':'',S.pin[i]&&S.pin[i].s!=='skip'?'▲':''].join('');return `<button type="button" class="tr" data-t="${i}"><svg class="tl" viewBox="-11 -11 22 22" aria-label="${{food:'吃的',do:'玩的',nature:'风景'}[n.side]}"><path d="${ICON[n.side]}"/></svg><span><b>${pv?n.past:n.now}</b><small>${(pv?n.P:n.N).t}</small></span><em>${done}</em></button>`};
  $('#sheet').innerHTML=`<h2 class="h">吃喝玩</h2>${gline(pv?`${CH[r].y} 年的${CH[r].s}这一路会遇到什么？`:'今天去哪儿吃，什么时候去，要花多少钱。')}
  ${pv?`<div class="stat">${EATFACT}</div>`:''}${!pv?picksHTML(r):''}
@@ -1262,6 +1362,7 @@ function rPlan(r){
  bind('#f-d','days','#o-d',v=>v+' 天');bind('#f-b','budget','#o-b',yuan);bind('#f-p','pace','#o-p',v=>v+' 公里');
  document.querySelectorAll('[name=plan]').forEach(x=>x.onchange=()=>{S.plan=x.value;save();render()});
  const fs=$('#f-s');if(fs)fs.onchange=e=>{S.start=e.target.value;save();render()};
+ document.querySelectorAll('[data-room]').forEach(x=>x.onchange=()=>{S.room=S.room||{};if(x.checked)S.room[x.dataset.room]=1;else delete S.room[x.dataset.room];save();render()});
  $('#f-m').onchange=e=>{S.mux=e.target.checked;save();render()};$('#f-c').onchange=e=>{S.comfort=e.target.checked?1:0;save();render()};
 }
 function boot(){showCover();render();if(S.phase==='play'&&S.road)flyRoad(S.road);return;
