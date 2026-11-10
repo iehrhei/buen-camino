@@ -11,3 +11,9 @@
 - 河流：Natural Earth 10m rivers（公有领域）。
 - 地形：从 Natural Earth 风格的晕渲地形图（basemap-data 附带）提取高原和山地，重绘成旧地图式的山形符号。
 - 每日终点：按主流攻略的常见分段整理，坐标是城镇中心的近似位置。
+
+## 语言
+
+有中文和英文两个版本。默认按浏览器语言打开，封面底部和左侧面板可以切换，也可以在链接后加 `?lang=en` 或 `?lang=zh` 直接打开对应版本。英文文本在 `i18n/` 的生成结果 `i18n_en.js` 里。
+
+English edition: add `?lang=en` to the link, or switch on the cover.
